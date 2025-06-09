@@ -1,3 +1,5 @@
+chromadb
+gradio
 langchain
 langchain-experimental
 langchain-community
