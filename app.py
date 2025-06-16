@@ -1,75 +1,131 @@
-import gradio as gr
-from utils.chromadb import (
-  setup_chromadb,
-  query_chromadb
-)
-from utils.utils import get_ollama_model
-import chromadb
+import ollama
+import streamlit as st
+from utils.chromadb import generate_relevant_chunks
+from utils.utils import (
+  get_prompt, 
+  collect_text_stream, 
+  convert_text_to_stream)
 import time
 
-def generate_relevant_chunks(query: str) -> str:
-  results = query_chromadb(query, 3)
-  output = results.get('documents', [''])[0]
-  return output
+# --- Header ---
+st.header("💬 My Personal Assistant Bot")
 
-def generate_answer_mistral(query: str, history) -> str:
-  llm = get_ollama_model()
-  
-  chunks = generate_relevant_chunks(query)
-  context = "\n".join(chunks)
-  
-  n = 5
-  last_few_messages = history[-n:]
-  conversation_history = "\n".join(last_few_messages)
-  
-  system_message = """
-  You are an expert question-answering assistant working at Shopee. You are tasked to answer questions related to Shopee's Refund Policy based on the provided context (found in the <context> </context> tags) and the conversation history (found in the <conversation_history> </conversation_history> tags).
-  If there is no such context, or if the question is not related to Shopee, reply with "I am only tasked to reply questions related to Shopee's Refund Policy."
-  
-  Always end your answer with "For more details, you may refer to https://help.shopee.sg/portal/4/article/77152-Refunds-and-Return-Policy."
-  Do not make up answers or provide information beyond the context.
+# --- Sidebar with profile selection ---
+st.sidebar.header("Profile Settings")
 
-  <context>
-  {context}
-  </context>
+profiles = [
+  "General",
+  "Shopee"
+]
+profile = st.sidebar.selectbox("Profile", profiles)
+
+# --- Session State for Chat History ---
+if "messages" not in st.session_state:
+  st.session_state.messages = []
+
+# TO-DO: create session states for each profile instead, and load them accordingly
+
+# --- Profile Response Logic ---
+def get_profile_prompt(profile:str, query: str):
+  formatted_profile = profile.lower()
+  prompt = get_prompt(profile)
   
-  <conversation_history>
-  {conversation_history}
-  </conversation_history>
-  """.format(context=context, conversation_history=conversation_history)
+  collections_mapping = {
+    "shopee": "shopee"
+  }
   
+  collection = collections_mapping.get(profile, "")
+  if collection:
+    chunks = generate_relevant_chunks(query, collection)
+    context = "\n".join(chunks)
+    prompt = prompt.format(context=context)
+  
+  return prompt
+
+def get_response(profile: str, query: str) -> str:
+  system_message = get_profile_prompt(profile, query)
+  
+  system_message_formatted = {
+    "role": "system",
+    "content": system_message,
+  }
+  
+  user_message_formatted = {
+    "role": "user",
+    "content": query,
+  }
+
   messages = [
-    (
-      "system",
-      system_message
-    ),
-    (
-      "human",
-      query
-    ),
+    system_message_formatted,
+    *st.session_state.messages,
+    user_message_formatted
   ]
+
+  model_name = 'mistral:latest'
+  start_time = time.time()
   
-  ai_msg = llm.invoke(messages)
-  output = ai_msg.content
+  print('generating message...')
+ 
+  stream = ollama.chat(
+    model=model_name, 
+    messages=messages,
+    stream=True
+  )
   
-  letters = 2
-  rate = 0.03
-  for i in range(0, len(output), letters):
-    time.sleep(rate)
-    yield output[:i + 1]
+  for chunk in stream:
+    chunk_content = chunk['message']['content']
+    yield chunk_content
+ 
+  print('time taken to generate message:', time.time() - start_time)
 
-def vote(data: gr.LikeData):
-  print(data)
-  if data.liked:
-      print("You upvoted this response: " + data.value["value"])
-  else:
-      print("You downvoted this response: " + data.value["value"])
+# --- Display Chat History ---
+for message in st.session_state.messages:
+  message_role = message["role"]
+  message_content = message["content"]
+  
+  st.chat_message(message_role).write(message_content)
 
-markdown = "!['Shopee Logo'](assets/Shopee_Logo.svg)"
-html = "<img src='assets/Shopee_Logo.svg'>"
-app = gr.ChatInterface(fn=generate_answer_mistral, type="messages", title="Shopee Bot")
+# --- User Input ---
+user_input = st.chat_input("Type your message here...")
 
-if __name__ == "__main__":
-  setup_chromadb()
-  # demo.launch()
-  app.launch()
+
+# --- Starter Message ---
+starter_msg = {
+  "role": "assistant",
+  "content": "Hey! I am your personal assistant. Pick your desired profile and ask away!"
+}
+
+starter_msg_role = starter_msg["role"]
+starter_msg_content = starter_msg["content"]
+starter_msg_content_stream = convert_text_to_stream(starter_msg_content)
+
+if len(st.session_state.messages) == 0:
+  st.chat_message(starter_msg_role).write_stream(starter_msg_content_stream)
+  st.session_state.messages.append(starter_msg)
+  
+# --- On New Message ---
+if user_input:
+  # to write user_input first
+  st.chat_message("user").write(user_input)
+  user_message = {
+    "role": "user",
+    "content": user_input,
+  }
+  st.session_state.messages.append(user_message)
+  
+  # get response
+  response_stream = get_response(profile, user_input)
+  
+  ai_message_box = st.chat_message("assistant").empty()
+  
+  collected_chunks = ""
+  for chunk in response_stream:
+    collected_chunks += chunk
+    ai_message_box.markdown(collected_chunks)
+  
+  assistant_message = {
+    "role": "assistant",
+    "content": collected_chunks,
+  }
+
+  st.session_state.messages.append(assistant_message)
