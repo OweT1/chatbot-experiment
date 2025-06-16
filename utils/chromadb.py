@@ -31,7 +31,7 @@ def setup_chromadb():
   client = get_chromadb_client()
   client.reset()
   
-  collection = client.get_or_create_collection('shopee-refund-policy')
+  collection = client.get_or_create_collection('shopee')
 
   documents = parse_text_files_in_folder('documents/')
   
@@ -66,7 +66,7 @@ def setup_chromadb():
   print("chromadb has been setup successfully!")
 
   
-def query_chromadb(query, n, collection_name='shopee-refund-policy'):
+def query_chromadb(query, n, collection_name):
   collection = get_chromadb_collection(collection_name)
 
   results = collection.query(
@@ -75,3 +75,8 @@ def query_chromadb(query, n, collection_name='shopee-refund-policy'):
   )
   
   return results
+
+def generate_relevant_chunks(query: str, collection_name) -> str:
+  results = query_chromadb(query, 3, collection_name)
+  output = results.get('documents', [''])[0]
+  return output

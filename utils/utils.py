@@ -1,6 +1,7 @@
 import os
 from langchain_ollama import ChatOllama
 import subprocess
+import time
 
 def parse_txt(file_path: str) -> str:
     """
@@ -100,3 +101,47 @@ def get_ollama_model(model: str = "mistral:latest") -> ChatOllama:
         temperature=0,
         max_retries=2,
     )
+    
+def get_prompt(profile: str) -> str:
+    """
+    Returns the prompt for the profile
+
+    Args:
+        profile (str): Profile for the llm
+
+    Returns:
+        str: Relevant prompt for profile
+    """
+    return parse_txt(f"prompts/{profile}.txt")
+
+def collect_text_stream(stream) -> str:
+    """
+    Yields all the text in a text generator/stream
+
+    Args:
+        stream: A string generator
+
+    Returns:
+        str: The content from the generator, seperated by a whitespace
+    """
+    
+    message = ""
+    for chunk in stream:
+        message += chunk
+    return message
+
+def convert_text_to_stream(text: str, delay: float = 0.1):
+    """
+    Converts the input text into a generator
+
+    Args:
+        text (str): Text to be chunked
+
+    Yields:
+        Generator: Yields the chunks in the splitted text
+    """
+    
+    split_text = text.split()
+    for chunk in split_text:
+        yield chunk + " "
+        time.sleep(delay)
