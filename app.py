@@ -17,13 +17,13 @@ profiles = [
   "General",
   "Shopee"
 ]
-profile = st.sidebar.selectbox("Profile", profiles)
+_profile = st.sidebar.selectbox("Profile", profiles)
 
 # --- Session State for Chat History ---
 if "messages" not in st.session_state:
-  st.session_state.messages = []
-
-# TO-DO: create session states for each profile instead, and load them accordingly
+  st.session_state.messages = {}
+  for profile in profiles:
+    st.session_state.messages[profile] = []
 
 # --- Profile Response Logic ---
 def get_profile_prompt(profile:str, query: str):
@@ -57,7 +57,7 @@ def get_response(profile: str, query: str) -> str:
 
   messages = [
     system_message_formatted,
-    *st.session_state.messages,
+    *st.session_state.messages[profile],
     user_message_formatted
   ]
 
@@ -79,7 +79,7 @@ def get_response(profile: str, query: str) -> str:
   print('time taken to generate message:', time.time() - start_time)
 
 # --- Display Chat History ---
-for message in st.session_state.messages:
+for message in st.session_state.messages[_profile]:
   message_role = message["role"]
   message_content = message["content"]
   
@@ -88,20 +88,26 @@ for message in st.session_state.messages:
 # --- User Input ---
 user_input = st.chat_input("Type your message here...")
 
-
 # --- Starter Message ---
-starter_msg = {
-  "role": "assistant",
-  "content": "Hey! I am your personal assistant. Pick your desired profile and ask away!"
+starter_msg_dict = {
+  "General": {
+    "role": "assistant",
+    "content": "Hey! I am your personal assistant. You can ask me about anything!"
+  },
+  "Shopee": {
+    "role": "assistant",
+    "content": "Hey! I am your Shopee personal assistant. You can ask me anything about Shopee and its policies!"
+  },
 }
 
+starter_msg = starter_msg_dict[_profile]
 starter_msg_role = starter_msg["role"]
 starter_msg_content = starter_msg["content"]
 starter_msg_content_stream = convert_text_to_stream(starter_msg_content)
 
-if len(st.session_state.messages) == 0:
+if len(st.session_state.messages[_profile]) == 0:
   st.chat_message(starter_msg_role).write_stream(starter_msg_content_stream)
-  st.session_state.messages.append(starter_msg)
+  st.session_state.messages[_profile].append(starter_msg)
   
 # --- On New Message ---
 if user_input:
@@ -111,10 +117,10 @@ if user_input:
     "role": "user",
     "content": user_input,
   }
-  st.session_state.messages.append(user_message)
-  
+  st.session_state.messages[_profile].append(user_message)
+ 
   # get response
-  response_stream = get_response(profile, user_input)
+  response_stream = get_response(_profile, user_input)
   
   ai_message_box = st.chat_message("assistant").empty()
   
@@ -128,4 +134,4 @@ if user_input:
     "content": collected_chunks,
   }
 
-  st.session_state.messages.append(assistant_message)
+  st.session_state.messages[_profile].append(assistant_message)
