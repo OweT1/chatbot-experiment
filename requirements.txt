@@ -10,6 +10,8 @@ psycopg2-binary
 sqlalchemy
 python-dotenv
 tavily-python
+requests
+bs4
 
 # old packages
 # langchain-experimental
