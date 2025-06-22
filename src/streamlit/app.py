@@ -1,23 +1,51 @@
 import ollama
 import streamlit as st
-from utils.chromadb import generate_relevant_chunks
-from utils.utils import (
+import time
+import os, sys
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+
+from src.utils.chromadb import generate_relevant_chunks
+from src.utils.utils import (
   get_prompt, 
   collect_text_stream, 
-  convert_text_to_stream)
-import time
-
-# --- Header ---
-st.header("💬 My Personal Assistant Bot")
+  convert_text_to_stream
+)
+from src.utils.tavily_search import tavily_search
+from helper import convert_conversation_for_download
 
 # --- Sidebar with profile selection ---
-st.sidebar.header("Profile Settings")
-
 profiles = [
   "General",
   "Shopee"
 ]
-_profile = st.sidebar.selectbox("Profile", profiles)
+
+with st.sidebar:
+  # Add chat button
+  st.button(
+    label="Add new Chat",
+    on_click=None,
+    icon=":material/open_in_new:"
+  )
+  
+  # Top header
+  st.header("Chatbot")
+
+  # Profiles
+  _profile = st.selectbox("Profile", profiles)
+
+  # Previous conversations
+  st.header("Previous Conversations")
+  last_5_conversations = ("xxx 1", "xxx 2", "xxx 3", "xxx 4", "xxx 5")
+  for conversation in last_5_conversations:
+    st.button(
+      label=conversation,
+      on_click=None,
+      use_container_width=True
+    )
+
+# --- Header ---
+st.header(f"💬 {_profile}")
 
 # --- Session State for Chat History ---
 if "messages" not in st.session_state:
@@ -64,26 +92,38 @@ def get_response(profile: str, query: str) -> str:
   model_name = 'mistral:latest'
   start_time = time.time()
   
+  tools_mapping = {
+    "General": [tavily_search]
+  }
+  
+  tools = tools_mapping.get(profile, [])
+  
   print('generating message...')
  
+  # for tools, you need to update ollama for streaming - pip install -U ollama
   stream = ollama.chat(
     model=model_name, 
     messages=messages,
-    stream=True
+    stream=True,
+    tools=tools,
   )
   
   for chunk in stream:
-    chunk_content = chunk['message']['content']
+    chunk_content = chunk.message.content
+    # if chunk.message.tool_calls:
+    #   tool_content = chunk.message.tool_calls
+    #   print(tool_content)
     yield chunk_content
- 
-  print('time taken to generate message:', time.time() - start_time)
+  
+  time_taken = time.time() - start_time
+  yield f"\n\n :gray-badge[:small[*:timer_clock: Time taken  &mdash; {time_taken: .2f} seconds*]]"
 
 # --- Display Chat History ---
 for message in st.session_state.messages[_profile]:
   message_role = message["role"]
   message_content = message["content"]
   
-  st.chat_message(message_role).write(message_content)
+  st.chat_message(message_role).markdown(message_content)
 
 # --- User Input ---
 user_input = st.chat_input("Type your message here...")
@@ -121,17 +161,31 @@ if user_input:
  
   # get response
   response_stream = get_response(_profile, user_input)
-  
   ai_message_box = st.chat_message("assistant").empty()
   
   collected_chunks = ""
+  
   for chunk in response_stream:
     collected_chunks += chunk
     ai_message_box.markdown(collected_chunks)
-  
+    
   assistant_message = {
     "role": "assistant",
     "content": collected_chunks,
   }
 
   st.session_state.messages[_profile].append(assistant_message)
+  
+# --- Download Button ---
+# pdf_file = convert_conversation_for_download(st.session_state.messages[_profile])
+
+# with open(pdf_file, "rb") as pdf_file:
+#   pdf_bytes = pdf_file.read()
+
+# st.download_button(
+#   label="Download PDF",
+#   data=pdf_bytes,
+#   file_name=f"conversation_history_{time.time()}",
+#   mime='application/octet-stream',
+#   icon=":material/download:"
+# )
