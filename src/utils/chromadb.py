@@ -1,7 +1,7 @@
 import chromadb
 from chromadb.config import Settings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from utils.utils import parse_text_files_in_folder
+from src.utils.utils import parse_text_files_in_folder
 import inspect
 
 def get_chromadb_client():
