@@ -1,0 +1,17 @@
+chromadb
+gradio
+langchain
+langchain-text-splitters
+langchain-ollama
+ollama
+streamlit
+
+# old packages
+langchain-experimental
+langchain-community
+faiss-cpu
+docx2txt
+sentence-transformers
+torch
+selenium
+tf-keras

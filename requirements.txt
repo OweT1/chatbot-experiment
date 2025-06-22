@@ -5,13 +5,18 @@ langchain-text-splitters
 langchain-ollama
 ollama
 streamlit
+fpdf2
+psycopg2-binary
+sqlalchemy
+python-dotenv
+tavily-python
 
 # old packages
-langchain-experimental
-langchain-community
-faiss-cpu
-docx2txt
-sentence-transformers
-torch
-selenium
-tf-keras
+# langchain-experimental
+# langchain-community
+# faiss-cpu
+# docx2txt
+# sentence-transformers
+# torch
+# selenium
+# tf-keras
