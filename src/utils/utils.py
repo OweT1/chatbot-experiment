@@ -44,7 +44,7 @@ def parse_text_files_in_folder(folder_path: str) -> dict[str, str]:
 
     text_file_content = {}
     for file_name in os.listdir(folder_path):
-    file_path = os.path.join(folder_path, file_name)
+        file_path = os.path.join(folder_path, file_name)
     if os.path.isfile(file_path):
         content = parse_txt(file_path)
         new_file_name = remove_file_extension(file_name)
