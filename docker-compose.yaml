@@ -1,7 +1,26 @@
 services:
   chroma:
     image: chromadb/chroma:latest
+    container_name: chroma
     ports:
       - "8000:8000"
     volumes:
       - ./chroma:/chroma
+  postgres:
+    image: postgres:latest
+    container_name: ${POSTGRES_DATABASE_NAME}
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DATABASE_NAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+  # streamlit-app:
+  #   build: .
+  #   ports:
+  #     - "8501:8501"
+  #   volumes:
+  #     - .:/streamlit
