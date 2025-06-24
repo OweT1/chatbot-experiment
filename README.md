@@ -17,7 +17,7 @@ After the installation of Ollama, you will need to do `ollama pull mistral` in t
 It is required to have an `.env` file containing the following information:
 
 - TAVILY_API_KEY (to get an API key from the [Official Tavily Website](https://www.tavily.com/))
-- POSTGRES_USER (determined by you)
+- POSTGRES_USERNAME (determined by you)
 - POSTGRES_PASSWORD (determined by you)
 - POSTGRES_DATABASE_NAME (determined by you)
 - PYTHONPATH (your full folder directory to this project)
