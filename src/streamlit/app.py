@@ -5,6 +5,7 @@ import os, sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
+from src.utils.postgres import PostgresDB
 from src.utils.chromadb import generate_relevant_chunks
 from src.utils.utils import (
   get_prompt, 
@@ -14,44 +15,93 @@ from src.utils.utils import (
 from src.utils.tavily_search import tavily_search
 from helper import convert_conversation_for_download
 
-# --- Sidebar with profile selection ---
+# --- Set up PostgresDB ---
+postgresdb = PostgresDB()
+postgresdb.setup()
+
+# --- Initialise session_state objects ---
 profiles = [
   "General",
   "Shopee"
 ]
 
+profile_icon_mapping = {
+  "General": "🤖",
+  "Shopee": "🛍️",
+}
+
+DEFAULT_PROFILE = "General"
+
+# initialise conversation_id & profile - should be the most recent
+if "current_conversation_id" not in st.session_state and "current_profile" not in st.session_state:
+  most_recent_conversation = postgresdb.get_most_recent_conversation()
+  if most_recent_conversation:
+    st.session_state.current_conversation_id = most_recent_conversation[0].id
+    st.session_state.current_profile = most_recent_conversation[0].profile
+  
+# initialise message history
+if st.session_state.current_conversation_id:
+  st.session_state.messages = postgresdb.get_conversation_history(conversation_id=st.session_state.current_conversation_id)
+elif messages not in st.session_state:
+  st.session_state.messages = []
+
+# --- Sidebar with profile selection ---
+@st.dialog(title="Choose your profile!", width="large")
+def choose_profile():
+  left, right = st.columns(2)
+  column_mapping = {
+    "General": left,
+    "Shopee": right
+  }
+  
+  for profile in profiles:
+    column = column_mapping[profile]
+    icon = profile_icon_mapping[profile]
+    if column.button(profile, icon=icon, use_container_width=True):
+      st.session_state.current_profile = profile
+      st.session_state.current_conversation_id = postgresdb.add_conversation(profile=profile, title="")  # add a conversation
+      st.session_state.messages = [] # reset session_state messages
+      st.rerun()
+
+def change_conversation(conversation):
+  st.session_state.current_conversation_id = conversation.id
+  st.session_state.current_profile = conversation.profile
+
+def format_button_label(conversation):
+  conversation_id = conversation.id
+  profile = conversation.profile
+  title = conversation.title
+  icon = profile_icon_mapping[profile]
+  
+  label = f"""
+  **{title}**
+  :small[{icon} *{profile}* -- *{conversation_id}*]
+  """
+  
+  return label
+ 
 with st.sidebar:
   # Add chat button
   st.button(
     label="Add new Chat",
-    on_click=None,
-    icon=":material/open_in_new:"
+    on_click=choose_profile,
+    icon=":material/open_in_new:",
+    use_container_width=True
   )
-  
-  # Top header
-  st.header("Chatbot")
-
-  # Profiles
-  _profile = st.selectbox("Profile", profiles)
 
   # Previous conversations
-  st.header("Previous Conversations")
-  last_5_conversations = ("xxx 1", "xxx 2", "xxx 3", "xxx 4", "xxx 5")
+  st.header("Conversation History")
+  last_5_conversations = postgresdb.get_top_k_conversations(k=5)
   for conversation in last_5_conversations:
     st.button(
-      label=conversation,
-      on_click=None,
+      label=format_button_label(conversation),
+      on_click=change_conversation,
+      args=[conversation],
       use_container_width=True
     )
 
 # --- Header ---
-st.header(f"💬 {_profile}")
-
-# --- Session State for Chat History ---
-if "messages" not in st.session_state:
-  st.session_state.messages = {}
-  for profile in profiles:
-    st.session_state.messages[profile] = []
+# st.header(f"💬 Chat - {st.session_state.current_profile}")
 
 # --- Profile Response Logic ---
 def get_profile_prompt(profile:str, query: str):
@@ -85,7 +135,7 @@ def get_response(profile: str, query: str) -> str:
 
   messages = [
     system_message_formatted,
-    *st.session_state.messages[profile],
+    *st.session_state.messages,
     user_message_formatted
   ]
 
@@ -119,14 +169,11 @@ def get_response(profile: str, query: str) -> str:
   yield f"\n\n :gray-badge[:small[*:timer_clock: Time taken  &mdash; {time_taken: .2f} seconds*]]"
 
 # --- Display Chat History ---
-for message in st.session_state.messages[_profile]:
+for message in st.session_state.messages:
   message_role = message["role"]
   message_content = message["content"]
   
   st.chat_message(message_role).markdown(message_content)
-
-# --- User Input ---
-user_input = st.chat_input("Type your message here...")
 
 # --- Starter Message ---
 starter_msg_dict = {
@@ -140,15 +187,23 @@ starter_msg_dict = {
   },
 }
 
-starter_msg = starter_msg_dict[_profile]
+starter_msg = starter_msg_dict[st.session_state.get("current_profile", DEFAULT_PROFILE)]
 starter_msg_role = starter_msg["role"]
 starter_msg_content = starter_msg["content"]
 starter_msg_content_stream = convert_text_to_stream(starter_msg_content)
 
-if len(st.session_state.messages[_profile]) == 0:
+if len(st.session_state.messages) == 0:
   st.chat_message(starter_msg_role).write_stream(starter_msg_content_stream)
-  st.session_state.messages[_profile].append(starter_msg)
+  st.session_state.messages.append(starter_msg)
+  postgresdb.add_message(
+    conversation_id=st.session_state.current_conversation_id,
+    sender=starter_msg_role,
+    content=starter_msg_content
+  ) # add message to database
   
+# --- User Input ---
+user_input = st.chat_input("Type your message here...")
+
 # --- On New Message ---
 if user_input:
   # to write user_input first
@@ -157,10 +212,15 @@ if user_input:
     "role": "user",
     "content": user_input,
   }
-  st.session_state.messages[_profile].append(user_message)
+  st.session_state.messages.append(user_message)
+  postgresdb.add_message(
+    conversation_id=st.session_state.current_conversation_id,
+    sender="user",
+    content=user_input
+  ) # add message to database
  
   # get response
-  response_stream = get_response(_profile, user_input)
+  response_stream = get_response(st.session_state.get("current_profile", DEFAULT_PROFILE), user_input)
   ai_message_box = st.chat_message("assistant").empty()
   
   collected_chunks = ""
@@ -173,8 +233,12 @@ if user_input:
     "role": "assistant",
     "content": collected_chunks,
   }
-
-  st.session_state.messages[_profile].append(assistant_message)
+  st.session_state.messages.append(assistant_message)
+  postgresdb.add_message(
+    conversation_id=st.session_state.current_conversation_id,
+    sender="assistant",
+    content=collected_chunks
+  ) # add message to database
   
 # --- Download Button ---
 # pdf_file = convert_conversation_for_download(st.session_state.messages[_profile])
