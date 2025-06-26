@@ -2,8 +2,15 @@ import streamlit as st
 from fpdf import FPDF
 import time
 
-def convert_dict_to_list(conversation_message: dict[str, str]) -> list[str]:
-  
+def convert_conversation_to_text(messages):
+    lines = []
+    for msg in messages:
+        role = msg["role"].capitalize()
+        content = msg["content"]
+        lines.append(f"{role}:\n{content}\n")
+    return "\n".join(lines)
+
+def collapse_msg_dict(conversation_message: dict[str, str]) -> dict[str, str]:
   role = conversation_message["role"]
   content = conversation_message["content"]
   
@@ -13,37 +20,30 @@ def convert_dict_to_list(conversation_message: dict[str, str]) -> list[str]:
   }
   
   entity = entity_mapping[role]
+  return {entity: content}
   
-  return [entity, content]
-  
-@st.cache_data
-def convert_conversation_for_download(conversation_history: list[dict[str, str]]):
-  
+def convert_conversation_to_pdf_file(conversation_history: list[dict[str, str]]):
   pdf = FPDF()
   pdf.add_page()
+  pdf.set_auto_page_break(auto=True, margin=15)
   
   # set pdf settings
   pdf.set_font("Arial", size=12)
   
   # define and format conversation_history
-  headers = ["Entity", "Conversation"]
+  conversation_updated_history = [collapse_msg_dict(conversation_msg) for conversation_msg in conversation_history]
   
-  conversation = [convert_dict_to_list(conversation_msg) for conversation_msg in conversation_history]
-  
-  for col in headers:
-    pdf.cell(40, 10, col, border=1, align="C")
-  pdf.ln()
-  
-  for conversation_message in conversation:
-    for conversation_data in conversation_message:
-      pdf.cell(40, 10, conversation_data, border=1, align="L")
-    pdf.ln()
+  for msg in conversation_updated_history:
+    for speaker, text in msg.items():
+      pdf.set_font("Arial", style="B", size=12)
+      pdf.cell(0, 10, f"{speaker}:", ln=1)
+      
+      pdf.set_font("Arial", size=12)
+      # Split text into multiple lines to fit page width
+      pdf.multi_cell(0, 10, text)
+      pdf.ln(2)  # Add a small vertical space after each message
     
-  file_name = f"conversation_history_{time.time()}.pdf"
-  file_dir = f"conversation_history/{file_name}"
+  file_name = f"conversation_history.pdf"  
+  pdf.output(name=file_name)
   
-  pdf.output(file_dir)
-  
-  print(f"Conversation history saved at {file_dir}")
-  
-  return file_dir
+  return file_name
