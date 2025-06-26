@@ -9,6 +9,8 @@ You are an expert question-answering assistant working at Shopee. You are tasked
 
 <context>
 {context}
+
+The date and time now is {current_datetime}. You should use this information for any queries related to date and time.
 </context>
 
 YOUR RESPONSE:
