@@ -1,0 +1,262 @@
+1.
+When can I raise a Return/Refund request?
+To request a Return/Refund, buyers have to raise a request via the Shopee app within 15 days from the date of delivery for purchases or after the estimated delivery date, whichever is earlier.
+For full terms and conditions please refer to this
+link
+here.
+2. How do I raise a Return/Refund request?
+To raise a Return/Refund request:
+Go to the
+Me
+tab.
+Select the order for which you want to make a request.
+Select
+Return/Refund
+.
+Select the reason for the request, product and quantity of items to be returned (if applicable).
+Complete the Return/Refund application with
+relevant evidence
+and description.
+Partial Return
+If you wish to return only a part of your order, a partial quantity, you can adjust the quantity by adjusting the number of items to return on the Select Product page when you initiate the Return/Refund request.
+You may adjust the number of items to return for the scenarios below.
+You can select (a) the entire bundle
+OR
+(b) part of the bundle items.
+You can select (a) the entire set of add-on deals
+OR
+(b) part of the add-on deal(s).
+You can select (a) the entire Purchase with Gift, including both the main item and the gift,
+OR
+return part of the main items only, provided that the corresponding gift is included in the return.
+Please note that for the following Return Reson, partial returns are not allowed as the entire order must be returned:
+Return in original/sealed condition
+There may be two solutions available, depending on your Return/Refund reason:
+Return and Refund
+(Find out more about
+how to return your items)
+Refund Only
+(you may enter your preferred
+Refund Amount
+*capped at your total payment amount for the order*)
+*Shopee will review the request and determine the appropriate solution.
+⚠️ Note
+There will be differences in the types of supporting documents required for each Return/Refund request.
+Evidence is not required for a non-receipt case under
+Parcel not delivered.
+If you have selected
+Received damaged item(s)
+you will be able to choose from 5 Return/Refund reasons below:
+Return/Refund reasons
+Definition
+Spilled liquid/contents
+Item received has obvious leakage of liquid/contents, causing the internal/external packaging to be wet/soiled and/or the item unsuitable for use
+Scratch/dents
+Item received has minor physical defects such as scratches and dents but the item is still functioning as intended / described on the listing
+Shattered products
+Item received has broken into multiple pieces and can no longer be used
+Other types of damage
+Item received has other forms of damage that are different from scratch/dents, outer packaging damaged, shattered/broken, spilled liquid/contents
+Product is defective or does not work
+Item received does not work as intended / described on the listing
+If you have selected
+Received incorrect item(s)
+you will be able to choose Return/Refund reasons below:
+Return/Refund reasons
+Definition
+Seller sent wrong item
+(e.g wrong size, model, colour, variation or totally different product)
+Item received is entirely different from the variation ordered
+Counterfeit product
+Item received is of a well-known/trademarked brand but reveals signs of imitation or forgery (e.g. obvious signs of poor workmanship, missing brand labels, misspelled brand name)
+If you have selected
+Did not receive some/all of the item
+you will be able to choose from the 3 Return/Refund reasons below:
+Return/Refund reasons
+Definition
+Missing part of the order
+User receives the parcel but missing some items originally ordered (in terms of quantity) or lacking specific parts or accessories of the items (including free gifts).
+Parcel not delivered
+User did not receive the parcel at all
+Empty Parcel
+User receives the parcel but the parcel is either empty (i.e., empty box/packaging with no items inside) or contains low-value, filler items (e.g. stone)
+If you have selected
+Other
+you will be able to choose Return/Refund reasons:
+Return/Refund reason
+Definition
+I want to return item in original / sealed condition
+User has not removed the item packaging and wants to return the item in its original packaging or condition
+If you have selected
+I didn’t receive some/all of my items
+, you will be able to choose from three Return/Refund reasons:
+Return/Refund reasons
+Definition
+Missing part of the order
+User receives the parcel but missing some items originally ordered (in terms of quantity) or lacking specific parts or accessories of the items (including free gifts).
+Parcel not delivered
+User did not receive the parcel at all
+Empty Parcel
+User receives the parcel but the parcel is either empty (i.e., empty box/packaging with no items inside) or contains low-value, filler items (e.g. stone)
+3. Can I still raise a Return/Refund request if I have clicked on the “Order Received” button?
+If you have clicked on the
+“Order Received”
+button, you may refer to the steps below to raise a Return/Refund request:
+Order is still within the Return/Refund period
+You may raise a Return/Refund request via the App.
+Order is after the Return/Refund period
+You may reach out to the seller personally through Shopee Chat.
+Alternatively, you may write to us by contacting
+Shopee Customer Service
+. The Shopee agent will review the case and offer a possible solution(s) to resolve the matter.
+4. How do you check on the status of your Return/Refund request?
+To check on the status of your Return/Refund request:
+Go to the
+Me
+tab.
+Select
+Return/Refund
+under
+My Purchases
+to see all your Return/Refund requests.
+Select the
+order
+you wish to check.
+Select
+Discuss
+to check your latest Return/Refund status.
+5. Can I raise a Return/Refund request for perishable items?
+Perishable goods are products that have short shelf life and may deteriorate quickly due to environmental factors (e.g. temperature, humidity). Examples include fresh produce, baked goods, cooked food, live products, and chilled or frozen products.
+You may raise a refund request as per usual for perishable goods.
+However, p
+lease take note of the following conditions that apply to perishable goods before raising a Return/Refund request:
+Due to their nature, perishable goods cannot be returned.
+Therefore, when you raise a Return/Refund request, your request will be considered for a
+refund only.
+Perishable goods
+are not eligible to be returned under "Return in original/ sealed condition
+return due to the nature of the product. For more details, visit this
+link
+.
+6. What should I do if I have not received an order that is shown as Delivered?
+If you have yet to receive your order even though the order status has been updated as Delivered, you should:
+1. Check with your family members or neighbours
+Your family or neighbours might have received the parcel on your behalf.
+Do also check areas where the parcel could have been left by the courier, such as your mailbox, the building's dry riser, or a shoe rack in your lobby, before requesting for a refund.
+2. Contact the seller
+If the seller's own delivery fleet delivered your parcel, please contact the seller directly via Shopee Chat to find out more about the delivery status.
+3. Raise a refund request
+You may raise a refund request for an order that was not received, as long as it is still within the Return/Refund period.
+To raise a Return/Refund request:
+Go to the
+Me
+tab.
+Select the order for which you want to raise a request.
+Select
+Return/Refund
+on the
+Order Details
+page.
+Select
+I didn’t receive my items
+.
+Select the product(s) not received.
+Select
+Parcel not delivered
+as the reason and submit your request.
+⚠️
+Note
+You are not required to submit any evidence for non-receipt cases.
+The
+Solution
+will automatically be set as
+Refund Only
+.
+Shopee will review the case and get back to you on the resolution.
+7. What should I do if I receive my order but it is damaged beyond return and my Return/Refund request has been approved by Shopee?
+If Shopee has approved the Return/Refund request subject to the review of the returned items, but the parcel received is badly damaged and cannot be returned (e.g. shattered glass, soaking wet packages, badly cracked furniture, etc.), please follow the steps below:
+1. Take pictures/videos of the parcel received
+Make sure the internal/external packaging used for the order is photographed along with the damaged item received.
+This helps our Shopee team better understand the condition of the item received. Examples of supporting pictures are provided below:
+2. Submit to Customer Service
+You may contact
+Customer Service
+and provide all the details required.
+8. Can I request for an exchange?
+Shopee does not offer direct exchange between buyers and sellers. If you are not satisfied with the product(s) received, you can raise a
+Return/Refund request
+.
+The seller may offer a full or partial refund before you return the product. If the seller offers a full refund or if you accept the seller's partial refund offer, you will not be required to return the product.
+To discuss or modify the refund amount proposed by the seller:
+Select
+Discuss
+.
+Select
+Counter
+.
+At the
+Counter Refund
+page, insert your proposed counter refund amount.
+Select
+Confirm
+.
+Or Select
+Modify offer
+if you would like to change your offer amount
+If you would like to accept the offer, Select
+Accept Proposal
+.
+Select
+Confirm
+.
+You will see
+Refund in Progress
+reflected on the page once the refund amount is accepted.
+If you do not wish to accept the seller's partial refund offer, you may Select “
+Continue with Return
+” and proceed with the return to receive a full refund.
+Your request will be processed after the returned product has been received and checked by the seller or Shopee warehouse.
+9. How do I cancel my Return/Refund request?
+You can cancel your Return/Refund request by;
+Going to
+Me
+tab > Select View Purchase History.
+Select Return/Refund tab > Select Return/Refund Details from the ongoing requests shown.
+Select Cancel Request > Select OK to confirm your cancellation request
+10. What should I do with a partial refund request?
+A seller may initiate a partial refund negotiation after Shopee has approved the Return/Refund request. Upon receiving a partial refund offer from the seller, you have three options:
+Accept the offer;
+Negotiate by providing a counteroffer; or
+Reject the offer.
+You are required to respond within 24 hours from the time the seller raised the proposal.
+If you or the seller accepts the partial refund proposal, you will not be required to return the product(s) and will receive the partial refund amount that was agreed upon.
+1.
+Accept the offer
+If the seller's proposed partial refund amount is satisfactory, you may accept the offer. The refund will be processed, and no return of the product(s) will be necessary.
+To accept the offer, select
+Discuss
+on the
+Return/Refund Details
+page > Select
+Accept Proposal
+.
+2.
+Negotiate
+If you wish to negotiate a higher refund amount, you can submit up to three counteroffers. Both buyer and seller must respond within 24 hours for each counteroffer.
+To propose a counteroffer, select
+Discuss
+on the
+Return/Refund Details
+page > Select
+Counter
+> Enter an amount for counter proposal > Select
+Confirm
+.
+The partial refund negotiation will end if either buyer or seller fails to respond within the set time frame. Buyers will be prompted to return the products for a full refund.
+3.
+Reject the offer
+If you are unable to reach an agreement with the seller, you may select
+Continue with return
+> Select
+OK
+> Proceed to return your product(s) to Shopee for a full refund.

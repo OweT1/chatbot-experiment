@@ -1,6 +1,6 @@
+import pandas as pd
 import requests
 from bs4 import BeautifulSoup
-import pandas as pd
 
 def extract_text(item):
   return item.get_text() if item else None

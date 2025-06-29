@@ -1,0 +1,88 @@
+common:
+  help_shopee:
+    base_url: https://help.shopee.sg/portal/4/article/
+    tag_name_1: &tag_name_1 div
+    tag_name: &tag_name div
+    class_name_1: &class_name_1 use-tiny-editor
+    class_name_2: &class_name_2 article_detail___ZMsj_ is_pc___Fv5tb ql-snow
+    class_name_3: &class_name_3 content___igvar tiny-editor-preview pcContent___ofi0s ssr-key-content
+    class_name: &class_name content___igvar tiny-editor-preview pcContent___ofi0s ssr-key-content
+
+links:
+  help_shopee:
+    policies:
+      shopee_policies:
+        returns_and_refund_policy:
+          name: "Returns and Refund Policy"
+          link_add: 77152
+          tag_name: *tag_name
+          class_name: *class_name
+    returns_and_refunds:
+      disputes:
+        shopee_return_refund_dispute:
+          name: "[Return Refund] How does Shopee handle disputes for returns/refunds?"
+          link_add: 76649
+          tag_name: *tag_name
+          class_name: *class_name
+      resolution:
+        shipping_returns:
+          name: "[Shipping Returns] Updating your return shipping information"
+          link_add: 144214
+          tag_name: *tag_name
+          class_name: *class_name
+        receiving_refund:
+          name: "[Return Refund] Receiving refund"
+          link_add: 146900
+          tag_name: *tag_name
+          class_name: *class_name
+        return_and_refund_timeline:
+          name: "[Return Refund] Return and refund timeframe"
+          link_add: 146898
+          tag_name: *tag_name
+          class_name: *class_name
+      raising_requests:
+        packing_return_parcels:
+          name: "[Shipping Returns] Packing Return Parcels"
+          link_add: 150685
+          tag_name: *tag_name
+          class_name: *class_name
+        effective_supporting_documents:
+          name: "[Return Refund] What are the effective supporting documents I can submit as evidence for my refund/return request?"
+          link_add: 76632
+          tag_name: *tag_name
+          class_name: *class_name
+        list_of_non_returnable_products:
+          name: "[Return Refund] List of non-returnable product categories"
+          link_add: 147709
+          tag_name: *tag_name
+          class_name: *class_name
+        return_in_original_sealed_condition:
+          name: "[Return Refund] I want to return item in original/sealed condition"
+          link_add: 146601
+          tag_name: *tag_name
+          class_name: *class_name
+        return_product_received_as_free_gift:
+          name: "[Return Refund] Can I return a product I received as a Free Gift under New User Rewards?"
+          link_add: 76646
+          tag_name: *tag_name
+          class_name: *class_name
+        raising_2_refund_request_shopee_mall:
+          name: "[Return Refund] Raising 2x Refund Request on Shopee Mall"
+          link_add: 170705
+          tag_name: *tag_name
+          class_name: *class_name
+        bulky_parcels_return:
+          name: "[Shipping Returns] Bulky Parcels Return"
+          link_add: 150686
+          tag_name: *tag_name
+          class_name: *class_name
+        raising_return_and_refund_request:
+          name: "[Return Refund] Raising Return & Refund request"
+          link_add: 76506
+          tag_name: *tag_name
+          class_name: *class_name
+        shipping_return_parcels:
+          name: "[Shipping Returns] Shipping Return Parcels"
+          link_add: 146907
+          tag_name: *tag_name
+          class_name: *class_name

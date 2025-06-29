@@ -1,0 +1,116 @@
+1. How will I be refunded if I paid by credit card instalment?
+For orders paid via
+credit card instalment
+, your refund will be credited to your credit card within seven to fourteen working days, depending on the issuing bank. You will be able to view the amount on your monthly credit card billing statement.
+If your refund is still being processed but your first instalment is due soon, you must pay it as scheduled. Once the refund process is complete, the amount paid for your first instalment will be refunded to your credit card.
+If your refund amount is not reflected in your credit card statement within the same month as your Return/Refund request, it may appear on the next month's statement. For more details on the refund, you can contact your bank directly.
+⚠️
+Note
+For orders with multiple products paid with credit card instalments, you can request a Return/Refund for one product only. Simply submit a Return/Refund request for the specific product. Shopee will consider the remaining products and adjust your monthly instalment amount accordingly.
+2. How do I ensure that my refund will be processed to my ShopeePay account successfully?
+To ensure that your refund will be processed successfully to your ShopeePay account:
+1. Ensure your ShopeePay is activated
+Your refund can only be processed with an activated ShopeePay account.
+If you have not activated ShopeePay when the request is received, you will receive a notification for
+ShopeePay activation
+. If you do not activate it within 3 days, payment will be refunded directly to your bank account within 1-3 working days (excluding weekends and public holidays).
+2. Check your ShopeePay balance limit
+To ensure a successful refund, the sum of the refund amount and your current ShopeePay balance must not exceed your ShopeePay balance limit.
+For verified accounts, ShopeePay allows a balance of up to SGD 5,000
+For unverified accounts, ShopeePay allows a balance of up to SGD 1,000.
+To increase your balance limit, you can
+verify your ShopeePay
+.
+Alternatively, you can withdraw the funds to the bank account linked to your ShopeePay.
+Here are the steps to check on your refund status
+Select Wallet Balance from your homepage
+Scroll down and select Last transactions
+Select the transaction you wish to check
+⚠️
+Note
+If you have reached the monthly limit for funds entering your ShopeePay account, your refund will be issued on the first day of the following month instead.
+3. When will I get my refund for cancelled orders?
+Refund timeline for orders cancelled can vary depending on the payment method used for your order. Please refer to the table below for the refund timelines:
+Payment Method
+Refund Destination
+Refund Timeline
+ShopeePay
+ShopeePay
+Instantly
+PayNow
+PayNow
+Instantly
+eGIRO
+ShopeePay (i)
+Instantly
+DBS Paylah
+DBS Paylah
+Instantly
+SPayLater
+SPayLater
+Instantly
+Credit/Debit Cards
+Credit Card
+5 - 10 working days
+GooglePay
+Credit Card
+5 - 10 working days
+Apple Pay
+Credit Card
+5 - 10 working days
+Mari Savings Account
+Mari Savings Account
+Instantly
+Mari Credit Card
+Mari Credit Card
+Instantly
+Once your refund has been processed, you will receive in-app notifications and email updates. To check, go to the Order Updates section under the Notifications tab on the Shopee App.
+⚠️Note
+(i) For refund credited to ShopeePay:
+If you have yet to set up
+ShopeePay
+, you will be prompted to do so within 72 hours.
+If you did not set up ShopeePay after 72 hours, you will be prompted to add a bank account to receive your refund. Your refund will be credited to your bank account within 1 to 3 working days.
+The refund amount then can be used for future purchases or to be
+withdrawn
+.
+(ii) For Mari Credit Card refund:
+For full cancellation, the refunded Mari Credit Card transaction will be displayed as a cancelled transaction on your Mari Credit Card transaction history. No charges will be made to your Mari Credit Card.
+For partial refunds, the remaining payable amount will be posted.
+4. How will my Shopee Coins be refunded for an order that is cancelled/returned/refunded?
+Your Shopee Coins will be refunded to you within 24 to 48 hours for any order cancellation or Return/Refund which is successful.
+To check if your Shopee coins have been refunded back to your account, go to the
+Me
+tab from your Shopee App > Select
+My Shopee Coins
+> Select the (
+>
+) Icon.
+⚠️ Note
+For a full refund of the order, you will also receive a full refund of all Shopee Coins used for the order
+For a partial refund of the order, you will only receive a partial refund of the Shopee Coins used, which will be pro-rated based on the refund amount.
+5. Will my voucher be reinstated if my order is cancelled or returned/refunded?
+Vouchers (e.g. Cashback vouchers, Shopee discount vouchers, Shop discount vouchers, Free Shipping vouchers) will automatically be reinstated once your order cancellation request is approved, provided that the following conditions are met:
+The voucher is still within the validity period for use.
+The voucher was applied to one order only.
+⚠️ Note
+For returned/refunded orders, please contact
+Shopee Customer Service
+to request for voucher reinstatement.
+Disclaimer:
+Please be informed that Shopee Live vouchers cannot be reinstated. You can join the sellers' Shopee Live sessions again to claim new Shopee Live vouchers for your future orders
+.
+6. Will the shipping fee I paid be refunded if my order is returned/refunded?
+The shipping fee paid for an order will be refunded to you if the following conditions are met:
+Your Return/Refund request is for all products purchased from the same seller.
+Your Return/Refund request is approved.
+If you are requesting a partial return of products purchased from one seller (e.g. one out of two products ordered, two out of five products ordered), you will not be eligible for a shipping fee refund.
+7. What should I do if I receive a different refund than expected?
+If you notice a difference between the expected refund amount and the actual amount received, please contact our customer support and provide the details below for further assistance:
+Order ID
+Proof of return received (e.g. screenshot)
+To reach out to our live agent, you can go to the
+Me
+tab >
+Chat with Shopee
+.

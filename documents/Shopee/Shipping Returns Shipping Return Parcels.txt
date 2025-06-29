@@ -1,0 +1,109 @@
+1. How do I ship my parcel for Return/Refund?
+Once your return request has been approved, you have
+three days
+to select your preferred shipping option. After selecting your preferred shipping option, you have
+seven days
+to return the item. Your return request will be cancelled if you do not select your shipping option or return the parcel within the given timeframe.
+You may refer to the due date displayed in your Shopee App.
+Parcel return options include:
+Drop Off
+: Drop your parcel off at a Shopee Collection Point or POPStation (free).
+Pick Up:
+Arrange for doorstep pick up through a Shopee Supported Logistics Provider (free).
+Self Arrange
+: Buyer to arrange a courier to deliver (Shopee will reimburse up to $10 for shipping cost incurred).
+The return options available will vary depending on the item’s weight and dimensions
+A) Drop Off Method (Free)
+You can drop your parcel off at a Singpost POPStation, Singpost POPStop, or Shopee Collection Point. When selecting a POPStation, POPStop, or Shopee Collection Point, consider the parcel weight and dimension.
+1.
+Singpost POPStation
+(
+Guide
+)
+Parcel returns at
+SingPost POPstation
+must be less than 30kg and/or within the dimensions of 42cm (L) x 37cm (W) x 61cm (H), to be accepted at POPStation.
+2.
+POPStop
+POPStop is a staffed counter that is available at all SingPost post office locations. You may drop your parcel off at a POPStop, and the staff will scan the parcel for returns.
+Parcels must be
+less than 30kg and/or within the dimensions of 42cm (L) x 37cm (W) x 61cm (H), to be accepted at POPStop.
+3.
+SPX Express Service Point
+Guide
+To drop your parcel off at an
+SPX Express Service Point
+, simply pass it over to the staff at the counter. If your return label is handwritten, please ensure that the QR code in your Shopee app is scanned before you leave.
+You are required to attach a return label for returns. You can either:
+Download the return label issue through the Shopee App and paste it on the outer packaging; or
+Attach the label provided by the
+SPX Express Service Point
+to the outer packaging, along with the Tracking Number and your username.
+Buyers will need to paste the new return Airway bill on top of the initial airway bill the seller used to ship out the parcel(if applicable).
+Parcels must be less than 5kg and within the sum dimensions of 80cm to be accepted at a
+SPX Express Service Point
+.
+4.
+Pick
+!
+Locker
+(
+Guide
+)
+(For selected users only)
+To drop your parcel off at a
+Pick
+!
+Locker, simply follow the instructions provided in the Shopee app then head over to the nearest Pick
+!
+Locker location to deposit your return parcel.
+You are required to write the tracking number on a piece of paper and securely attach it to the outer return packaging of the return parcel.
+Note:
+If the Pick
+!
+Locker selected is full, please select the next nearest Pick
+!
+Locker to deposit your return parcel.
+B) Pickup Method (Free of Charge)
+Shopee offers a free return pickup service.  Once your Return/Refund request has been approved, you may select
+Pick Up
+, set your
+Pickup Date
+and
+Pickup Time
+> Set
+Pickup Address
+> Select
+Confirm
+.
+Our courier partner will pick up the return parcel from the address you have provided based on the pickup date and time.
+⚠️ Note
+Please ensure your parcel is securely packed in its original packaging to prevent damage during transportation.
+Attach a piece of paper with the Tracking Number and Order ID  written clearly on the outer packaging, covering the existing/ initial shipping label where applicable.
+Each order should have its own unique return pick-up tracking number,
+Our courier partner may reject your parcel upon collection if the above requirements are not met.
+If our courier partner fails to collect your return parcel by the end of the scheduled date, you can change the selected shipping option once.
+If the pick-up fails for the second time, please contact our Live agent via the chat feature on the Shopee app to reschedule for a new pickup date.
+C) Self Arrange Method (Reimbursable)
+-
+Guide
+Arrange the return shipment of your parcel using traceable mailing options that provide a tracking number. This allows Shopee and the seller to confirm that the parcel has been delivered to the correct address.
+The address to ship to will be shown on the Shopee App, after you have selected the method of shipment.
+Shopee will reimburse up to $10 for the return postage. Remember to upload the shipping information on your
+Return/Refund Details
+page as proof of postage.
+After your return parcel has been shipped, your request will be processed up to 5 working days after the parcel has reached the warehouse. You will receive notifications of the outcome of the request via in-app notification and email.
+2. Change of return shipping option.
+You may change the return shipping option if your initial return arrangement fails.
+To make changes, select “
+Change
+” and click “
+Confirm
+”.
+Please note that you can only change the return shipping
+once, and the “Self Arrange” shipping option cannot be selected.
+App version
+PC Version
+⚠️ Note
+To prevent your request from being auto-cancelled, you must select a return shipping option within three days of the request being approved and return the item within seven days from the day you selected the return shipping option.
+Your returned products will be checked by the seller or Shopee Warehouse team to ensure they meet the necessary conditions for return.

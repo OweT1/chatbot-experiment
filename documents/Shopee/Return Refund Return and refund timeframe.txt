@@ -1,0 +1,56 @@
+How long will it take for me to receive my refund?
+Refunds will be initiated within 24 hours of receiving successful Return/Refund requests. The time it takes to process your refund will depend on the payment method used for your order. Please refer to the table below on the estimated refund timeline.
+Payment Method
+Refund Destination
+Refund timeline
+Further details
+ShopeePay
+ShopeePay
+Instantly
+If ShopeePay has yet to be set up, you will be prompted to do so within 72 hours for the refunds to be credited.
+If ShopeePay is not being set up within 72 hours, you will be prompted to add a bank account instead.
+Your refund will be credited to your bank account within one to three working days and can be used for future purchases or to be withdrawn.
+PayNow
+PayNow
+Instantly
+The refund amount should be reflected in the original payment method that you used when paying using PayNow.
+Thus, please check which Banking App was used to scan the PayNow QR code when making payment such as
+DBS Paylah! Wallet, GooglePay, and so on)
+eGIRO
+ShopeePay (i)
+Instantly
+-
+DBS Paylah
+DBS Paylah
+Instantly
+-
+SPayLater
+ShopeePay
+Instantly
+Bill has been charged
+The refunded amount will be first used to offset your SPayLater’s outstanding balance and any excess amount will then be credited to your ShopeePay.
+Bill is yet to be charged
+The amount will be credited back to your SPayLater’s available balance within 24 hours.
+Credit/Debit Cards
+Credit Card
+5 - 10 working days
+-
+GooglePay
+Credit Card
+5 - 10 working days
+-
+Apple Pay
+Credit Card
+5 - 10 working days
+-
+Mari Savings Account
+Mari Savings Account
+Instantly
+If your Mari Savings Account has reached the maximum amount of deposit, a refund will be credited to your ShopeePay wallet or other linked bank account with Shopee.
+Mari Credit Card Instant Checkout
+Mari Credit Card
+Instantly
+The refund will be displayed as another transaction in your Mari Credit Card transaction history. The amount to be refunded will be used to pay off your current Mari Credit Card outstanding due amount, if any.
+Any excess refunds will be credited as an overpayment and can be used to pay off your next Mari Credit Card statement.
+Read more
+HERE

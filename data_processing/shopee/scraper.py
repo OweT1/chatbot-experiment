@@ -1,3 +1,4 @@
+# --- Scrapping using Selenium --- #
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
@@ -24,14 +25,75 @@ def scrap_url_content(url, tag_name, class_name):
   
   return items
 
+# --- Scrapping using BS4 --- #
+import requests
+from bs4 import BeautifulSoup
+
+def extract_text(item):
+  return item.get_text(separator="\n", strip=True) if item else None
+
+def scrap_url_text_context(url, tag_name, class_name):
+  response = requests.get(url)
+  
+  if response.ok:
+    soup = BeautifulSoup(response.text, 'html.parser')
+    data = soup.find(tag_name, class_=class_name)
+    text = extract_text(data)
+    
+    return text
+
+import yaml
+import pandas as pd
+import re
+import json
+import os
+
+def clean_file_name(name: str) -> str:
+  return re.sub(r'[^a-zA-Z0-9\s]', '', name)
+
 if __name__ == "__main__":
-  url = "https://help.shopee.sg/portal/4/article/77152-Refunds-and-Return-Policy"
-  tag_name = 'div'
-  class_name = '"use-tiny-editor"'
-
-  text = scrap_url_content(url=url, tag_name=tag_name, class_name=class_name)[0]
-
-  with open('Refund Policy Document.txt', 'w', encoding = 'UTF-8') as output:
-      output.write(text)
-      output.close()
-
+  with open('data_processing/shopee/url_links.yaml', 'r') as file:
+    data_links = yaml.safe_load(file)
+    file.close()
+  
+  common = data_links['common']
+  content = data_links['links']
+  
+  os.makedirs('documents/Shopee', exist_ok=True)
+  
+  for item_category, config in common.items():
+    base_url = config['base_url']
+    
+    website_content = content[item_category]
+    results_df = pd.DataFrame()
+    for big_category, sub_categories in website_content.items():
+      for sub_category_name, sub_category_items in sub_categories.items():
+        for item_name, item_details in sub_category_items.items():
+          name = item_details['name']
+          clean_name = clean_file_name(name)
+          link_add = item_details['link_add']
+          tag_name = item_details['tag_name']
+          class_name = item_details['class_name']
+          
+          full_link = base_url + str(link_add)
+          link_content = scrap_url_text_context(full_link, tag_name, class_name)
+          
+          item_details['clean_name'] = clean_name
+          item_details['full_link'] = full_link
+          item_details['link_content'] = link_content
+          
+          with open(f'documents/Shopee/{clean_name}.txt', 'w', encoding = 'UTF-8') as output:
+            output.write(link_content)
+            output.close()
+          
+          temp_df = pd.DataFrame(item_details, index=[0])
+          results_df = pd.concat([results_df, temp_df], axis=0).reset_index(drop=True)
+          
+          results_json = {}
+          for index, row in results_df.iterrows():
+            results_json[row['name']] = row['full_link']
+            
+          with open(f'documents/Shopee/list_of_supported_documents.json', 'w') as json_file:
+            json.dump(results_json, json_file, indent=4)
+        
+  print(results_df)
