@@ -3,4 +3,7 @@ chroma/
 __pycache__/
 pgdata/
 .env
+pyvenv.cfg
+Lib/
+Scripts/
 conversation_history.pdf
