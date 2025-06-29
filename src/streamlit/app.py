@@ -8,6 +8,7 @@ import os, sys
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
 from src.streamlit.helper import (
+  get_starter_message,
   convert_conversation_to_text,
   convert_conversation_to_pdf_file
 )
@@ -31,7 +32,6 @@ from src.utils.utils import (
   convert_text_to_stream
 )
 from src.utils.tavily_search import tavily_search
-
 
 # --- Set up various databases ---
 @st.cache_resource
@@ -192,7 +192,7 @@ with st.sidebar:
 # --- Profile Response Logic ---
 def get_profile_prompt(profile:str, query: str):
   formatted_profile = profile.lower()
-  prompt = get_prompt(profile)
+  prompt = get_prompt(formatted_profile)
   
   current_datetime = datetime.datetime.utcnow()
   
@@ -200,15 +200,15 @@ def get_profile_prompt(profile:str, query: str):
     "shopee": "shopee"
   }
   
-  collection = collections_mapping.get(profile, "")
+  collection = collections_mapping.get(formatted_profile, "")
   if collection:
     chunks = generate_relevant_chunks(
       db=chromadb, query=query, collection_name=collection
     )
     context = "\n".join(chunks)
     prompt = prompt.format(context=context, current_datetime=current_datetime)
-  
-  prompt = prompt.format(current_datetime=current_datetime)
+  else:
+    prompt = prompt.format(current_datetime=current_datetime)
   
   return prompt
 
@@ -265,26 +265,11 @@ def get_response(profile: str, query: str) -> str:
 for message in st.session_state.messages:
   message_role = message["role"]
   message_content = message["content"]
-  
-  st.chat_message(message_role).markdown(message_content)
-  # if message_role == "assistant":
-  #   copy_button(
-  #     text=message_content
-  #   )
+  st.chat_message(message_role).markdown(message_content, help=message_help)
 
 # --- Starter Message ---
-starter_msg_dict = {
-  "General": {
-    "role": "assistant",
-    "content": "Hey! I am your personal assistant. You can ask me about anything!"
-  },
-  "Shopee": {
-    "role": "assistant",
-    "content": "Hey! I am your Shopee personal assistant. You can ask me anything about Shopee and its policies!"
-  },
-}
-
-starter_msg = starter_msg_dict[st.session_state.get("current_profile", DEFAULT_PROFILE)]
+curr_profile = st.session_state.get("current_profile", DEFAULT_PROFILE)
+starter_msg = get_starter_message(curr_profile)
 starter_msg_role = starter_msg["role"]
 starter_msg_content = starter_msg["content"]
 starter_msg_content_stream = convert_text_to_stream(starter_msg_content)

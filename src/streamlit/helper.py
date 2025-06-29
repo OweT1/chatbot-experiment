@@ -1,7 +1,27 @@
 import streamlit as st
 from fpdf import FPDF
 import time
+import json
 
+def get_starter_message(profile: str):
+  with open('documents/Shopee/list_of_supported_documents.json', 'r') as json_file:
+    shopee_documents = json.load(json_file)
+  list_of_documents = "\n".join([f"{key}: {value}" for key, value in shopee_documents.items()])
+  
+  starter_msg_dict = {
+    "General": {
+      "role": "assistant",
+      "content": "Hey! I am your personal assistant. You can ask me about anything!"
+    },
+    "Shopee": {
+      "role": "assistant",
+      "content": "Hey! I am your Shopee personal assistant. You can ask me anything about Shopee and its policies!",
+      "help": f"{list_of_documents}"
+    },
+  }
+  
+  return starter_msg_dict[profile]
+  
 def convert_conversation_to_text(messages):
     lines = []
     for msg in messages:

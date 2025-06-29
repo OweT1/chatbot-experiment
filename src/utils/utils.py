@@ -45,10 +45,31 @@ def parse_text_files_in_folder(folder_path: str) -> dict[str, str]:
     text_file_content = {}
     for file_name in os.listdir(folder_path):
         file_path = os.path.join(folder_path, file_name)
-    if os.path.isfile(file_path):
-        content = parse_txt(file_path)
-        new_file_name = remove_file_extension(file_name)
-        text_file_content[new_file_name] = content
+        if os.path.isfile(file_path):
+            content = parse_txt(file_path)
+            new_file_name = remove_file_extension(file_name)
+            text_file_content[new_file_name] = content
+        
+    return text_file_content
+
+def parse_text_files_in_folder_recursively(folder_path: str) -> dict[str, str]:
+    """
+    Parses all text files in the folder_path
+
+    Args:
+        folder_path (str): Folder path to read all text files
+
+    Returns:
+        dict[str, str]: Dictionary containing file names and their content
+    """
+
+    text_file_content = {}
+    for dirpath, dirnames, filenames in os.walk(folder_path):
+        for filename in filenames:
+            full_path = os.path.join(dirpath, filename)
+            content = parse_txt(full_path)
+            new_filename = remove_file_extension(filename)
+            text_file_content[new_filename] = content
         
     return text_file_content
   

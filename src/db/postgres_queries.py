@@ -1,4 +1,5 @@
 import uuid
+import datetime
 from src.db.postgres import Conversation, ConversationMessage
 
 def add_conversation(db, profile, title):

@@ -19,7 +19,7 @@ class ChromaDB:
     
     collection = self.client.get_or_create_collection('shopee')
 
-    documents = parse_text_files_in_folder('documents/')
+    documents = parse_text_files_in_folder('documents/Shopee')
     
     text_splitter = RecursiveCharacterTextSplitter(
       chunk_size = 1000,
