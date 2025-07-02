@@ -13,6 +13,8 @@ tavily-python
 requests
 bs4
 pyyaml
+selenium
+python-docx
 
 # old packages
 # langchain-experimental
