@@ -2,6 +2,8 @@ import os
 from langchain_ollama import ChatOllama
 import subprocess
 import time
+import json
+from docx import Document
 
 def parse_txt(file_path: str) -> str:
     """
@@ -18,6 +20,26 @@ def parse_txt(file_path: str) -> str:
         content = f.read()
         
     return content
+
+def parse_docx(file_path: str) -> str:
+    """
+    Parses the .docx file at the input file_path
+
+    Args:
+        file_path (str): File path to the desired .docx file
+
+    Returns:
+        str: Text where each paragraph is separated by a '\n' character
+    """
+    
+    document = Document(file_path)
+    text = []
+    
+    for paragraph in document.paragraphs:
+        cleaned_text = paragraph.text.replace("\xa0", "")
+        text.append(cleaned_text)
+    
+    return '\n'.join(text)
 
 def remove_file_extension(file_name: str) -> str:
     """
@@ -166,3 +188,8 @@ def convert_text_to_stream(text: str, delay: float = 0.1):
     for chunk in split_text:
         yield chunk + " "
         time.sleep(delay)
+        
+def parse_json(file_dir: str):
+    with open(file_dir, 'r') as json_file:
+        output = json.load(json_file)
+    return output

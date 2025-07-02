@@ -4,6 +4,7 @@ import streamlit as st
 import datetime
 import time
 import os, sys
+import json
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
@@ -55,15 +56,10 @@ file_types = [
   ".pdf"
 ]
 
-profiles = [
-  "General",
-  "Shopee"
-]
-
-profile_icon_mapping = {
-  "General": "🤖",
-  "Shopee": "🛍️",
-}
+with open('src/streamlit/profile_mapping.json', 'rb') as profile_json:
+  profile_mapping = json.load(profile_json)
+  
+profiles = profile_mapping.keys()
 
 DEFAULT_PROFILE = "General"
 
@@ -73,6 +69,9 @@ if "current_conversation_id" not in st.session_state and "current_profile" not i
   if most_recent_conversation:
     st.session_state.current_conversation_id = most_recent_conversation[0].id
     st.session_state.current_profile = most_recent_conversation[0].profile
+  else:
+    st.session_state.current_conversation_id = add_conversation(db=postgresdb, profile=DEFAULT_PROFILE, title="")
+    st.session_state.current_profile = DEFAULT_PROFILE
   
 # initialise message history
 if st.session_state.current_conversation_id:
@@ -88,13 +87,16 @@ def choose_profile():
   left, right = st.columns(2)
   column_mapping = {
     "General": left,
-    "Shopee": right
+    "Shopee": right,
+    "Personal": left,
+    "Research": right,
   }
   
   for profile in profiles:
     column = column_mapping[profile]
-    icon = profile_icon_mapping[profile]
-    if column.button(profile, icon=icon, use_container_width=True):
+    helper_msg = profile_mapping[profile]["help"]
+    icon = profile_mapping[profile]["icon"]
+    if column.button(profile, icon=icon, help=helper_msg, use_container_width=True):
       st.session_state.current_profile = profile
       st.session_state.current_conversation_id = add_conversation(
         db=postgresdb, profile=profile, title=""
@@ -148,7 +150,7 @@ def format_button_label(conversation):
   conversation_id = conversation.id
   profile = conversation.profile
   title = conversation.title
-  icon = profile_icon_mapping[profile]
+  icon = profile_mapping[profile]["icon"]
   
   label = f"""
   **{title}**
@@ -202,18 +204,19 @@ def get_profile_prompt(profile:str, query: str):
   
   collection = collections_mapping.get(formatted_profile, "")
   if collection:
-    chunks = generate_relevant_chunks(
+    chunks, metadata = generate_relevant_chunks(
       db=chromadb, query=query, collection_name=collection
     )
     context = "\n".join(chunks)
     prompt = prompt.format(context=context, current_datetime=current_datetime)
   else:
     prompt = prompt.format(current_datetime=current_datetime)
+    metadata = []
   
-  return prompt
+  return prompt, metadata
 
 def get_response(profile: str, query: str) -> str:
-  system_message = get_profile_prompt(profile, query)
+  system_message, metadata = get_profile_prompt(profile, query)
   
   system_message_formatted = {
     "role": "system",
@@ -265,6 +268,7 @@ def get_response(profile: str, query: str) -> str:
 for message in st.session_state.messages:
   message_role = message["role"]
   message_content = message["content"]
+  message_help = message.get("help", "")
   st.chat_message(message_role).markdown(message_content, help=message_help)
 
 # --- Starter Message ---
@@ -272,6 +276,7 @@ curr_profile = st.session_state.get("current_profile", DEFAULT_PROFILE)
 starter_msg = get_starter_message(curr_profile)
 starter_msg_role = starter_msg["role"]
 starter_msg_content = starter_msg["content"]
+starter_msg_help = starter_msg.get("help", "")
 starter_msg_content_stream = convert_text_to_stream(starter_msg_content)
 
 if len(st.session_state.messages) == 0:
@@ -282,7 +287,8 @@ if len(st.session_state.messages) == 0:
     db=postgresdb,
     conversation_id=st.session_state.current_conversation_id,
     sender=starter_msg_role,
-    content=starter_msg_content
+    content=starter_msg_content,
+    helper=starter_msg_help
   ) # add message to database
   
 # --- User Input ---

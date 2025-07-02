@@ -1,0 +1,18 @@
+{
+  "General": {
+    "icon": "🤖",
+    "help": "General Chatbot powered by Web Search"
+  },
+  "Shopee": {
+    "icon": "🛍️",
+    "help": "Chatbot Assistant to answer any questions related to Shopee's Return and Refund Policies"
+  },
+  "Personal": {
+    "icon": "🗿",
+    "help": "Personal Chatbot to answer any questions relating to a Person"
+  },
+  "Research": {
+    "icon": "📖",
+    "help": "Research Agent performing analysis. Still a WIP"
+  }
+}
