@@ -89,11 +89,16 @@ if __name__ == "__main__":
           temp_df = pd.DataFrame(item_details, index=[0])
           results_df = pd.concat([results_df, temp_df], axis=0).reset_index(drop=True)
           
-          results_json = {}
-          for index, row in results_df.iterrows():
-            results_json[row['name']] = row['full_link']
-            
-          with open(f'documents/Shopee/list_of_supported_documents.json', 'w') as json_file:
-            json.dump(results_json, json_file, indent=4)
+    results_json = {}
+    for index, row in results_df.iterrows():
+      clean_name = clean_file_name(row['name'])
+      
+      results_json[clean_name] = {
+        "actual_name": row['name'],
+        "link": row['full_link']
+      }
+      
+    with open(f'documents/Shopee/list_of_supported_documents.json', 'w') as json_file:
+      json.dump(results_json, json_file, indent=4)
         
   print(results_df)

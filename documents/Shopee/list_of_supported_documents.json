@@ -1,16 +1,58 @@
 {
-    "Returns and Refund Policy": "https://help.shopee.sg/portal/4/article/77152",
-    "[Return Refund] How does Shopee handle disputes for returns/refunds?": "https://help.shopee.sg/portal/4/article/76649",
-    "[Shipping Returns] Updating your return shipping information": "https://help.shopee.sg/portal/4/article/144214",
-    "[Return Refund] Receiving refund": "https://help.shopee.sg/portal/4/article/146900",
-    "[Return Refund] Return and refund timeframe": "https://help.shopee.sg/portal/4/article/146898",
-    "[Shipping Returns] Packing Return Parcels": "https://help.shopee.sg/portal/4/article/150685",
-    "[Return Refund] What are the effective supporting documents I can submit as evidence for my refund/return request?": "https://help.shopee.sg/portal/4/article/76632",
-    "[Return Refund] List of non-returnable product categories": "https://help.shopee.sg/portal/4/article/147709",
-    "[Return Refund] I want to return item in original/sealed condition": "https://help.shopee.sg/portal/4/article/146601",
-    "[Return Refund] Can I return a product I received as a Free Gift under New User Rewards?": "https://help.shopee.sg/portal/4/article/76646",
-    "[Return Refund] Raising 2x Refund Request on Shopee Mall": "https://help.shopee.sg/portal/4/article/170705",
-    "[Shipping Returns] Bulky Parcels Return": "https://help.shopee.sg/portal/4/article/150686",
-    "[Return Refund] Raising Return & Refund request": "https://help.shopee.sg/portal/4/article/76506",
-    "[Shipping Returns] Shipping Return Parcels": "https://help.shopee.sg/portal/4/article/146907"
+    "Returns and Refund Policy": {
+        "actual_name": "Returns and Refund Policy",
+        "link": "https://help.shopee.sg/portal/4/article/77152"
+    },
+    "Return Refund How does Shopee handle disputes for returnsrefunds": {
+        "actual_name": "[Return Refund] How does Shopee handle disputes for returns/refunds?",
+        "link": "https://help.shopee.sg/portal/4/article/76649"
+    },
+    "Shipping Returns Updating your return shipping information": {
+        "actual_name": "[Shipping Returns] Updating your return shipping information",
+        "link": "https://help.shopee.sg/portal/4/article/144214"
+    },
+    "Return Refund Receiving refund": {
+        "actual_name": "[Return Refund] Receiving refund",
+        "link": "https://help.shopee.sg/portal/4/article/146900"
+    },
+    "Return Refund Return and refund timeframe": {
+        "actual_name": "[Return Refund] Return and refund timeframe",
+        "link": "https://help.shopee.sg/portal/4/article/146898"
+    },
+    "Shipping Returns Packing Return Parcels": {
+        "actual_name": "[Shipping Returns] Packing Return Parcels",
+        "link": "https://help.shopee.sg/portal/4/article/150685"
+    },
+    "Return Refund What are the effective supporting documents I can submit as evidence for my refundreturn request": {
+        "actual_name": "[Return Refund] What are the effective supporting documents I can submit as evidence for my refund/return request?",
+        "link": "https://help.shopee.sg/portal/4/article/76632"
+    },
+    "Return Refund List of nonreturnable product categories": {
+        "actual_name": "[Return Refund] List of non-returnable product categories",
+        "link": "https://help.shopee.sg/portal/4/article/147709"
+    },
+    "Return Refund I want to return item in originalsealed condition": {
+        "actual_name": "[Return Refund] I want to return item in original/sealed condition",
+        "link": "https://help.shopee.sg/portal/4/article/146601"
+    },
+    "Return Refund Can I return a product I received as a Free Gift under New User Rewards": {
+        "actual_name": "[Return Refund] Can I return a product I received as a Free Gift under New User Rewards?",
+        "link": "https://help.shopee.sg/portal/4/article/76646"
+    },
+    "Return Refund Raising 2x Refund Request on Shopee Mall": {
+        "actual_name": "[Return Refund] Raising 2x Refund Request on Shopee Mall",
+        "link": "https://help.shopee.sg/portal/4/article/170705"
+    },
+    "Shipping Returns Bulky Parcels Return": {
+        "actual_name": "[Shipping Returns] Bulky Parcels Return",
+        "link": "https://help.shopee.sg/portal/4/article/150686"
+    },
+    "Return Refund Raising Return  Refund request": {
+        "actual_name": "[Return Refund] Raising Return & Refund request",
+        "link": "https://help.shopee.sg/portal/4/article/76506"
+    },
+    "Shipping Returns Shipping Return Parcels": {
+        "actual_name": "[Shipping Returns] Shipping Return Parcels",
+        "link": "https://help.shopee.sg/portal/4/article/146907"
+    }
 }

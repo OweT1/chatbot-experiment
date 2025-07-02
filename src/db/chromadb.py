@@ -1,8 +1,12 @@
 import chromadb
 from chromadb.config import Settings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from src.utils.utils import parse_text_files_in_folder
 import inspect
+
+from src.utils.utils import (
+  parse_json,
+  parse_text_files_in_folder
+)
 
 class ChromaDB:
   def __init__(self):
@@ -21,6 +25,8 @@ class ChromaDB:
 
     documents = parse_text_files_in_folder('documents/Shopee')
     
+    document_details = parse_json('documents/Shopee/list_of_supported_documents.json')
+    
     text_splitter = RecursiveCharacterTextSplitter(
       chunk_size = 1000,
       chunk_overlap = 200,
@@ -31,7 +37,12 @@ class ChromaDB:
     for doc_name, content in documents.items():
       chunks = text_splitter.split_text(content)
       num_chunks = len(chunks)
-      metadatas = [{"document_name": doc_name}] * num_chunks
+      
+      doc_details = document_details.get(doc_name, {})
+      full_doc_name = doc_details.get("actual_name", doc_name)
+      full_doc_link = doc_details.get("link", "")
+      
+      metadatas = [{"document_name": full_doc_name, "document_link": full_doc_link}] * num_chunks
       ids = [str(x) for x in list(range(start_chunk, start_chunk + num_chunks))]
       
       collection.upsert(

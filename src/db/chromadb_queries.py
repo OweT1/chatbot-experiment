@@ -21,7 +21,10 @@ def query_chromadb(db, query, n, collection_name):
   
   return results
 
-def generate_relevant_chunks(db, query: str, collection_name) -> str:
-  results = query_chromadb(db, query, 3, collection_name)
-  output = results.get('documents', [''])[0]
-  return output
+def generate_relevant_chunks(db, query: str, collection_name, n=3) -> list[str]:
+  results = query_chromadb(db, query, n, collection_name)
+  
+  content = results.get('documents', [''])[0]
+  metadata = results.get('metadatas', [''])[0]
+  
+  return content, metadata
