@@ -33,7 +33,7 @@ def update_conversation(db, conversation_id, **kwargs):
     
     session_local.commit()
       
-def add_message(db, conversation_id, sender, content):
+def add_message(db, conversation_id, sender, content, helper=""):
   add_update_datetime = datetime.datetime.utcnow() # define the current datetime to use for adding and updating
   
   with db.session() as session_local:
@@ -52,7 +52,8 @@ def add_message(db, conversation_id, sender, content):
       conversation_id=conversation_id,
       sender=sender,
       content=content,
-      created_at=add_update_datetime
+      created_at=add_update_datetime,
+      helper=helper,
     )
     # add entry and commit both changes
     session_local.add(msg)
