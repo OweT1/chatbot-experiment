@@ -3,10 +3,14 @@ from fpdf import FPDF
 import time
 import json
 
+from src.utils.utils import parse_json
+
 def get_starter_message(profile: str):
-  with open('documents/Shopee/list_of_supported_documents.json', 'r') as json_file:
-    shopee_documents = json.load(json_file)
-  list_of_documents = "\n".join([f"{key}: {value}" for key, value in shopee_documents.items()])
+  shopee_documents = parse_json('documents/Shopee/list_of_supported_documents.json')
+  shopee_list_of_documents = [f"{clean_document['actual_name']}: {clean_document['link']}" for clean_document in shopee_documents.values()]
+  shopee_help_message = f"List of Supported Documents:\n"
+  for document in shopee_list_of_documents:
+    shopee_help_message += f"- {document}\n"
   
   starter_msg_dict = {
     "General": {
@@ -16,10 +20,10 @@ def get_starter_message(profile: str):
     "Shopee": {
       "role": "assistant",
       "content": "Hey! I am your Shopee personal assistant. You can ask me anything about Shopee and its policies!",
-      "help": f"{list_of_documents}"
+      "help": shopee_help_message
     },
   }
-  
+
   return starter_msg_dict[profile]
   
 def convert_conversation_to_text(messages):

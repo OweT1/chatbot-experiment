@@ -1,0 +1,17 @@
+{
+  ".txt": {
+    "column": "left",
+    "mime": "text/plain",
+    "content": "text_content"
+  },
+  ".doc": {
+    "column": "middle",
+    "mime": "application/msword",
+    "content": "text_content"
+  },
+  ".pdf": {
+    "column": "right",
+    "mime": "application/octet-stream",
+    "content": "pdf_content"
+  }
+}

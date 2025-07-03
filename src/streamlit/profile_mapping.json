@@ -1,18 +1,22 @@
 {
   "General": {
     "icon": "🤖",
-    "help": "General Chatbot powered by Web Search"
+    "help": "General Chatbot powered by Web Search",
+    "column": "left"
   },
   "Shopee": {
     "icon": "🛍️",
-    "help": "Chatbot Assistant to answer any questions related to Shopee's Return and Refund Policies"
+    "help": "Chatbot Assistant to answer any questions related to Shopee's Return and Refund Policies",
+    "column": "right"
   },
   "Personal": {
     "icon": "🗿",
-    "help": "Personal Chatbot to answer any questions relating to a Person"
+    "help": "Personal Chatbot to answer any questions relating to a Person",
+    "column": "left"
   },
   "Research": {
     "icon": "📖",
-    "help": "Research Agent performing analysis. Still a WIP"
+    "help": "Research Agent performing analysis. Still a WIP",
+    "column": "right"
   }
 }

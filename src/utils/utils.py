@@ -190,6 +190,7 @@ def convert_text_to_stream(text: str, delay: float = 0.1):
         time.sleep(delay)
         
 def parse_json(file_dir: str):
-    with open(file_dir, 'r') as json_file:
+    with open(file_dir, 'rb') as json_file:
         output = json.load(json_file)
+        json_file.close()
     return output

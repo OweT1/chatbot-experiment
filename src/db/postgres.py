@@ -22,7 +22,7 @@ class Conversation(Base):
   created_at = Column(DateTime(timezone=True), default=datetime.datetime.utcnow)
   updated_at = Column(DateTime(timezone=True), default=datetime.datetime.utcnow)
   
-  messages = relationship("ConversationMessage", back_populates="conversation")
+  messages = relationship("ConversationMessage", back_populates="conversation", cascade="all, delete")
 
 # define conversation_messages table - stores all the messages from each conversation
 class ConversationMessage(Base):

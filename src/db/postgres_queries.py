@@ -32,7 +32,15 @@ def update_conversation(db, conversation_id, **kwargs):
       conversation.key = value
     
     session_local.commit()
-      
+
+def delete_conversation(db, conversation_id):
+  with db.session() as session_local:
+    # retrieve conversation based on the conversation_id
+    conversation = session_local.query(Conversation).filter_by(id=conversation_id).first()
+    
+    session_local.delete(conversation)
+    session_local.commit()
+
 def add_message(db, conversation_id, sender, content, helper=""):
   add_update_datetime = datetime.datetime.utcnow() # define the current datetime to use for adding and updating
   

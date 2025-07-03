@@ -5,6 +5,7 @@ import datetime
 import time
 import os, sys
 import json
+from dataclasses import dataclass
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
@@ -18,6 +19,7 @@ from src.db.postgres import PostgresDB
 from src.db.postgres_queries import (
   add_conversation,
   update_conversation,
+  delete_conversation,
   add_message,
   get_conversation_history,
   get_top_k_conversations,
@@ -30,7 +32,8 @@ from src.db.chromadb_queries import generate_relevant_chunks
 from src.utils.utils import (
   get_prompt, 
   collect_text_stream, 
-  convert_text_to_stream
+  convert_text_to_stream,
+  parse_json
 )
 from src.utils.tavily_search import tavily_search
 
@@ -49,29 +52,46 @@ def init_db():
 
 postgresdb, chromadb = init_db()
 
-# --- Initialise session_state objects ---
-file_types = [
-  ".txt",
-  ".doc",
-  ".pdf"
-]
+# --- Initialise objects --- #
+@dataclass
+class initObjects:
+  profile_mapping: dict
+  profiles: list
+  file_type_mapping: dict
+  file_types: list
+  DEFAULT_PROFILE: str
 
-with open('src/streamlit/profile_mapping.json', 'rb') as profile_json:
-  profile_mapping = json.load(profile_json)
+@st.cache_resource
+def init_objects() -> initObjects:
+  profile_mapping = parse_json('src/streamlit/profile_mapping.json')
+  profiles = profile_mapping.keys()
+
+  file_type_mapping = parse_json('src/streamlit/file_mapping.json')
+  file_types = file_type_mapping.keys()
+
+  DEFAULT_PROFILE = "General"
   
-profiles = profile_mapping.keys()
+  return initObjects(
+    profile_mapping=profile_mapping,
+    profiles=profiles,
+    file_type_mapping=file_type_mapping,
+    file_types=file_types,
+    DEFAULT_PROFILE=DEFAULT_PROFILE
+  )
 
-DEFAULT_PROFILE = "General"
+objects = init_objects()
 
-# initialise conversation_id & profile - should be the most recent
+# --- Initialise session_state objects --- #
+# @st.cache_data
+# def init_session_state():
 if "current_conversation_id" not in st.session_state and "current_profile" not in st.session_state:
   most_recent_conversation = get_most_recent_conversation(db=postgresdb)
   if most_recent_conversation:
     st.session_state.current_conversation_id = most_recent_conversation[0].id
     st.session_state.current_profile = most_recent_conversation[0].profile
   else:
-    st.session_state.current_conversation_id = add_conversation(db=postgresdb, profile=DEFAULT_PROFILE, title="")
-    st.session_state.current_profile = DEFAULT_PROFILE
+    st.session_state.current_conversation_id = add_conversation(db=postgresdb, profile=objects.DEFAULT_PROFILE, title="")
+    st.session_state.current_profile = objects.DEFAULT_PROFILE
   
 # initialise message history
 if st.session_state.current_conversation_id:
@@ -81,21 +101,22 @@ if st.session_state.current_conversation_id:
 elif messages not in st.session_state:
   st.session_state.messages = []
 
+# init_session_state()
+
 # --- Sidebar with profile selection ---
 @st.dialog(title="Choose your profile", width="large")
 def choose_profile():
   left, right = st.columns(2)
   column_mapping = {
-    "General": left,
-    "Shopee": right,
-    "Personal": left,
-    "Research": right,
+    "left": left,
+    "right": right
   }
   
-  for profile in profiles:
-    column = column_mapping[profile]
-    helper_msg = profile_mapping[profile]["help"]
-    icon = profile_mapping[profile]["icon"]
+  for profile in objects.profiles:
+    column = column_mapping[objects.profile_mapping[profile]["column"]]
+    helper_msg = objects.profile_mapping[profile]["help"]
+    icon = objects.profile_mapping[profile]["icon"]
+    
     if column.button(profile, icon=icon, help=helper_msg, use_container_width=True):
       st.session_state.current_profile = profile
       st.session_state.current_conversation_id = add_conversation(
@@ -111,29 +132,26 @@ def choose_file_type():
   
   with open(pdf_file_dir, "rb") as pdf_file:
     pdf_content = pdf_file.read()
+    pdf_file.close()
     
   left, middle, right = st.columns(3)
+  
   column_mapping = {
-    ".txt": left,
-    ".doc": middle,
-    ".pdf": right
-  }
-  mime_mapping = {
-    ".txt": "text/plain",
-    ".doc": "application/msword",
-    ".pdf": "application/octet-stream"
+    "left": left,
+    "middle": middle,
+    "right": right
   }
   content_mapping = {
-    ".txt": text_content,
-    ".doc": text_content,
-    ".pdf": pdf_content
+    "text_content": text_content,
+    "pdf_content": pdf_content
   }
   
-  for file_type in file_types:
-    column = column_mapping[file_type]
-    content = content_mapping[file_type]
-    mime_type = mime_mapping[file_type]
-     
+  for file_type in objects.file_types:
+    file_mapping = objects.file_type_mapping[file_type]
+    column = column_mapping[file_mapping["column"]]
+    mime_type = file_mapping["mime"]
+    content = content_mapping[file_mapping["content"]]
+    
     column.download_button(
       label=file_type,
       data=content,
@@ -150,7 +168,7 @@ def format_button_label(conversation):
   conversation_id = conversation.id
   profile = conversation.profile
   title = conversation.title
-  icon = profile_mapping[profile]["icon"]
+  icon = objects.profile_mapping[profile]["icon"]
   
   label = f"""
   **{title}**
@@ -180,13 +198,22 @@ with st.sidebar:
   st.header("Conversation History")
   past_conversations = get_all_conversations(db=postgresdb)
   # last_5_conversations = postgresdb.get_top_k_conversations(k=5)
+  
   for conversation in past_conversations:
-    st.button(
-      label=format_button_label(conversation),
-      on_click=change_conversation,
-      args=[conversation],
-      use_container_width=True
-    )
+    left, right = st.columns([0.9, 0.1], vertical_alignment="center")
+    with left:
+      st.button(
+        label=format_button_label(conversation),
+        on_click=change_conversation,
+        args=[conversation],
+        use_container_width=True
+      )
+    with right:
+      if st.button(label="", icon="❌", key=f"del_{conversation.id}", type="tertiary"):
+        delete_conversation(postgresdb, conversation.id)
+        latest_conversation = get_most_recent_conversation(postgresdb)
+        change_conversation(latest_conversation[0])
+        st.rerun()
 
 # --- Header ---
 # st.header(f"💬 Chat - {st.session_state.current_profile}")
@@ -272,7 +299,7 @@ for message in st.session_state.messages:
   st.chat_message(message_role).markdown(message_content, help=message_help)
 
 # --- Starter Message ---
-curr_profile = st.session_state.get("current_profile", DEFAULT_PROFILE)
+curr_profile = st.session_state.get("current_profile", objects.DEFAULT_PROFILE)
 starter_msg = get_starter_message(curr_profile)
 starter_msg_role = starter_msg["role"]
 starter_msg_content = starter_msg["content"]
@@ -280,7 +307,10 @@ starter_msg_help = starter_msg.get("help", "")
 starter_msg_content_stream = convert_text_to_stream(starter_msg_content)
 
 if len(st.session_state.messages) == 0:
-  st.chat_message(starter_msg_role).write_stream(starter_msg_content_stream)
+  with st.chat_message(starter_msg_role):
+    st.write_stream(starter_msg_content_stream)
+    st.markdown(body="", help=starter_msg_help)
+    
   st.session_state.messages.append(starter_msg)
   
   add_message(
@@ -313,7 +343,7 @@ if user_input:
  
   # get response
   with st.spinner("Generating response...", show_time=True):
-    response_stream = get_response(st.session_state.get("current_profile", DEFAULT_PROFILE), user_input)
+    response_stream = get_response(st.session_state.get("current_profile", objects.DEFAULT_PROFILE), user_input)
     ai_message_box = st.chat_message("assistant").empty()
     
     collected_chunks = ""
