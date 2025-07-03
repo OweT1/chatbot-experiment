@@ -19,7 +19,7 @@ class ChromaDB:
   
   def setup(self):
     # gets the client and resets the database
-    self.client.reset()
+    # self.client.reset()
     
     collection = self.client.get_or_create_collection('shopee')
 
