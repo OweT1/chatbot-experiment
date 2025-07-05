@@ -114,9 +114,9 @@ def get_profile_prompt(db, profile:str, query: str):
     formatted_prompt = prompt.format(current_datetime=current_datetime)
     
   elif formatted_profile == "personal":
-    profile = parse_docx("documents/Personal/Resume.docx")
-    profile_name = "Owen"
-    formatted_prompt = prompt.format(profile=profile, person_name=profile_name, current_datetime=current_datetime)
+    person_profile = parse_docx("documents/Personal/Resume.docx")
+    person_name = "Owen"
+    formatted_prompt = prompt.format(person_profile=person_profile, person_name=person_name, current_datetime=current_datetime)
   
   return formatted_prompt, metadata
 
