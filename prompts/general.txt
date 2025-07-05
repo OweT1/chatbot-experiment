@@ -11,7 +11,7 @@ You are a helpful, knowledgeable assistant built to answer general questions cle
 </task>
 
 <context>
-1. The date and time now is {current_datetime}. You should use this information for any queries related to date and time.
+The date and time now is {current_datetime}. You should use this information for any queries related to date and time.
 </context>
 
 YOUR RESPONSE:
