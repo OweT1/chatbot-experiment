@@ -19,8 +19,8 @@ class Conversation(Base):
   id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
   profile = Column(String(50), nullable=False)
   title = Column(Text)
-  created_at = Column(DateTime(timezone=True), default=datetime.datetime.utcnow)
-  updated_at = Column(DateTime(timezone=True), default=datetime.datetime.utcnow)
+  created_at = Column(DateTime(timezone=True), default=datetime.datetime.now)
+  updated_at = Column(DateTime(timezone=True), default=datetime.datetime.now)
   
   messages = relationship("ConversationMessage", back_populates="conversation", cascade="all, delete")
 
@@ -32,7 +32,7 @@ class ConversationMessage(Base):
   conversation_id = Column(UUID(as_uuid=True), ForeignKey('conversations.id'), nullable=False)
   sender = Column(String(50), nullable=False)
   content = Column(Text, nullable=False)
-  created_at = Column(DateTime(timezone=True), default=datetime.datetime.utcnow)
+  created_at = Column(DateTime(timezone=True), default=datetime.datetime.now)
   helper = Column(Text)
   
   conversation = relationship("Conversation", back_populates="messages")

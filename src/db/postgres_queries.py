@@ -42,7 +42,7 @@ def delete_conversation(db, conversation_id):
     session_local.commit()
 
 def add_message(db, conversation_id, sender, content, helper=""):
-  add_update_datetime = datetime.datetime.utcnow() # define the current datetime to use for adding and updating
+  add_update_datetime = datetime.datetime.now() # define the current datetime to use for adding and updating
   
   with db.session() as session_local:
     # retrieve conversation based on conversation_id
