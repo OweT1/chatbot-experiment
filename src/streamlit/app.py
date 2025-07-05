@@ -1,7 +1,5 @@
-import ollama
 import streamlit as st
 # from st_copy import copy_button
-import datetime
 import time
 import os, sys
 import json
@@ -10,9 +8,11 @@ from dataclasses import dataclass
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
 from src.streamlit.helper import (
-  get_starter_message,
   convert_conversation_to_text,
-  convert_conversation_to_pdf_file
+  convert_conversation_to_pdf_file,
+  get_starter_message,
+  get_response,
+  get_button_helper_and_label
 )
 
 from src.db.postgres import PostgresDB
@@ -27,15 +27,12 @@ from src.db.postgres_queries import (
   get_most_recent_conversation
 )
 from src.db.chromadb import ChromaDB
-from src.db.chromadb_queries import generate_relevant_chunks
 
 from src.utils.utils import (
-  get_prompt, 
   collect_text_stream, 
   convert_text_to_stream,
   parse_json
 )
-from src.utils.tavily_search import tavily_search
 
 # --- Set up various databases ---
 @st.cache_resource
@@ -82,8 +79,6 @@ def init_objects() -> initObjects:
 objects = init_objects()
 
 # --- Initialise session_state objects --- #
-# @st.cache_data
-# def init_session_state():
 if "current_conversation_id" not in st.session_state and "current_profile" not in st.session_state:
   most_recent_conversation = get_most_recent_conversation(db=postgresdb)
   if most_recent_conversation:
@@ -100,8 +95,13 @@ if st.session_state.current_conversation_id:
   )
 elif messages not in st.session_state:
   st.session_state.messages = []
-
-# init_session_state()
+  
+def add_and_change_conversation_session(profile: str = objects.DEFAULT_PROFILE):
+  st.session_state.current_profile = profile
+  st.session_state.current_conversation_id = add_conversation(
+    db=postgresdb, profile=profile, title=""
+  )  # add a conversation
+  st.session_state.messages = [] # reset session_state messages
 
 # --- Sidebar with profile selection ---
 @st.dialog(title="Choose your profile", width="large")
@@ -118,11 +118,7 @@ def choose_profile():
     icon = objects.profile_mapping[profile]["icon"]
     
     if column.button(profile, icon=icon, help=helper_msg, use_container_width=True):
-      st.session_state.current_profile = profile
-      st.session_state.current_conversation_id = add_conversation(
-        db=postgresdb, profile=profile, title=""
-      )  # add a conversation
-      st.session_state.messages = [] # reset session_state messages
+      add_and_change_conversation_session(profile=profile)
       st.rerun()
       
 @st.dialog(title="Choose your desired file type", width="large")
@@ -163,19 +159,14 @@ def choose_file_type():
 def change_conversation(conversation):
   st.session_state.current_conversation_id = conversation.id
   st.session_state.current_profile = conversation.profile
-
-def format_button_label(conversation):
-  conversation_id = conversation.id
-  profile = conversation.profile
-  title = conversation.title
-  icon = objects.profile_mapping[profile]["icon"]
   
-  label = f"""
-  **{title}**
-  :small[{icon} *{profile}* -- *{conversation_id}*]
-  """
-  
-  return label
+def delete_conversation_sidebar(conversation):
+  delete_conversation(postgresdb, conversation.id)
+  latest_conversation = get_most_recent_conversation(postgresdb)
+  if latest_conversation:
+    change_conversation(latest_conversation[0])
+  else:
+    add_and_change_conversation_session()
  
 with st.sidebar:
   # Add chat button
@@ -200,96 +191,30 @@ with st.sidebar:
   # last_5_conversations = postgresdb.get_top_k_conversations(k=5)
   
   for conversation in past_conversations:
-    left, right = st.columns([0.9, 0.1], vertical_alignment="center")
+    left, right = st.columns([1, 0.1], vertical_alignment="center")
     with left:
+      profile_mapping = objects.profile_mapping
+      help_msg, label = get_button_helper_and_label(conversation, profile_mapping)
       st.button(
-        label=format_button_label(conversation),
+        label=label,
+        use_container_width=True,
+        help=help_msg,
         on_click=change_conversation,
         args=[conversation],
-        use_container_width=True
       )
     with right:
-      if st.button(label="", icon="❌", key=f"del_{conversation.id}", type="tertiary"):
-        delete_conversation(postgresdb, conversation.id)
-        latest_conversation = get_most_recent_conversation(postgresdb)
-        change_conversation(latest_conversation[0])
-        st.rerun()
-
+      st.button(
+        label="",
+        icon="❌",
+        key=f"del_{conversation.id}",
+        type="tertiary", 
+        help="Delete Conversation",
+        on_click=delete_conversation_sidebar,
+        args=[conversation],
+      )
+        
 # --- Header ---
 # st.header(f"💬 Chat - {st.session_state.current_profile}")
-
-# --- Profile Response Logic ---
-def get_profile_prompt(profile:str, query: str):
-  formatted_profile = profile.lower()
-  prompt = get_prompt(formatted_profile)
-  
-  current_datetime = datetime.datetime.utcnow()
-  
-  collections_mapping = {
-    "shopee": "shopee"
-  }
-  
-  collection = collections_mapping.get(formatted_profile, "")
-  if collection:
-    chunks, metadata = generate_relevant_chunks(
-      db=chromadb, query=query, collection_name=collection
-    )
-    context = "\n".join(chunks)
-    prompt = prompt.format(context=context, current_datetime=current_datetime)
-  else:
-    prompt = prompt.format(current_datetime=current_datetime)
-    metadata = []
-  
-  return prompt, metadata
-
-def get_response(profile: str, query: str) -> str:
-  system_message, metadata = get_profile_prompt(profile, query)
-  
-  system_message_formatted = {
-    "role": "system",
-    "content": system_message,
-  }
-  
-  user_message_formatted = {
-    "role": "user",
-    "content": query,
-  }
-
-  messages = [
-    system_message_formatted,
-    *st.session_state.messages,
-    user_message_formatted
-  ]
-
-  model_name = 'mistral:latest'
-  # start_time = time.time()
-  
-  tools_mapping = {
-    "General": [tavily_search]
-  }
-  
-  tools = tools_mapping.get(profile, [])
-  
-  print('generating message...')
- 
-  # for tools, you need to update ollama for streaming - pip install -U ollama
-  stream = ollama.chat(
-    model=model_name, 
-    messages=messages,
-    stream=True,
-    tools=tools,
-  )
-  
-  for chunk in stream:
-    chunk_content = chunk.message.content
-    # if chunk.message.tool_calls:
-    #   tool_content = chunk.message.tool_calls
-    #   print(tool_content)
-    yield chunk_content
-
-  # time_taken = time.time() - start_time
-  # print(time_taken)
-  # yield f"\n\n :gray-badge[:small[*:timer_clock: Time taken  &mdash; {time_taken: .2f} seconds*]]"
 
 # --- Display Chat History ---
 for message in st.session_state.messages:
@@ -343,7 +268,13 @@ if user_input:
  
   # get response
   with st.spinner("Generating response...", show_time=True):
-    response_stream = get_response(st.session_state.get("current_profile", objects.DEFAULT_PROFILE), user_input)
+    response_stream = get_response(
+      db=chromadb,
+      profile=st.session_state.get("current_profile", objects.DEFAULT_PROFILE),
+      query=user_input,
+      message_history=st.session_state.messages
+    )
+    
     ai_message_box = st.chat_message("assistant").empty()
     
     collected_chunks = ""
