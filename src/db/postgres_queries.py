@@ -1,6 +1,7 @@
 import uuid
 import datetime
 from src.db.postgres import Conversation, ConversationMessage
+from src.streamlit.helper import create_message_format
 
 def add_conversation(db, profile, title):
   conversation_id = uuid.uuid4() # define conversation_id
@@ -41,7 +42,7 @@ def delete_conversation(db, conversation_id):
     session_local.delete(conversation)
     session_local.commit()
 
-def add_message(db, conversation_id, sender, content, helper=""):
+def add_message(db, conversation_id, sender, content, help=""):
   add_update_datetime = datetime.datetime.now() # define the current datetime to use for adding and updating
   
   with db.session() as session_local:
@@ -61,7 +62,7 @@ def add_message(db, conversation_id, sender, content, helper=""):
       sender=sender,
       content=content,
       created_at=add_update_datetime,
-      helper=helper,
+      help=help,
     )
     # add entry and commit both changes
     session_local.add(msg)
@@ -75,10 +76,11 @@ def get_conversation_history(db, conversation_id) -> list[dict[str, str]]:
                         .all()
                         
   cleaned_conversation_history = [
-    {
-      "role": message.sender,
-      "content": message.content
-    }
+    create_message_format(
+      role=message.sender,
+      content=message.content,
+      help=message.help
+    )
     for message in conversation_history
   ]
   return cleaned_conversation_history

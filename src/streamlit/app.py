@@ -8,11 +8,15 @@ from dataclasses import dataclass
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
 from src.streamlit.helper import (
+  close_dialog,
+  collapse_list_to_points,
   convert_conversation_to_text,
   convert_conversation_to_pdf_file,
+  create_message_format,
   get_starter_message,
+  get_profile_prompt,
   get_response,
-  get_button_helper_and_label
+  get_button_help_and_label
 )
 
 from src.db.postgres import PostgresDB
@@ -89,19 +93,20 @@ if "current_conversation_id" not in st.session_state and "current_profile" not i
     st.session_state.current_profile = objects.DEFAULT_PROFILE
   
 # initialise message history
-if st.session_state.current_conversation_id:
-  st.session_state.messages = get_conversation_history(
-    db=postgresdb, conversation_id=st.session_state.current_conversation_id
-  )
-elif messages not in st.session_state:
-  st.session_state.messages = []
+if "messages" not in st.session_state:
+  if st.session_state.current_conversation_id:
+    st.session_state.messages = get_conversation_history(
+      db=postgresdb, conversation_id=st.session_state.current_conversation_id
+    )
+  else:
+    st.session_state.messages = []
   
 def add_and_change_conversation_session(profile: str = objects.DEFAULT_PROFILE):
+  st.session_state.messages = [] # reset session_state messages
   st.session_state.current_profile = profile
   st.session_state.current_conversation_id = add_conversation(
     db=postgresdb, profile=profile, title=""
   )  # add a conversation
-  st.session_state.messages = [] # reset session_state messages
 
 # --- Sidebar with profile selection ---
 @st.dialog(title="Choose your profile", width="large")
@@ -114,11 +119,12 @@ def choose_profile():
   
   for profile in objects.profiles:
     column = column_mapping[objects.profile_mapping[profile]["column"]]
-    helper_msg = objects.profile_mapping[profile]["help"]
+    help_msg = objects.profile_mapping[profile]["help"]
     icon = objects.profile_mapping[profile]["icon"]
     
-    if column.button(profile, icon=icon, help=helper_msg, use_container_width=True):
+    if column.button(profile, icon=icon, help=help_msg, use_container_width=True):
       add_and_change_conversation_session(profile=profile)
+      close_dialog()
       st.rerun()
       
 @st.dialog(title="Choose your desired file type", width="large")
@@ -194,7 +200,7 @@ with st.sidebar:
     left, right = st.columns([1, 0.1], vertical_alignment="center")
     with left:
       profile_mapping = objects.profile_mapping
-      help_msg, label = get_button_helper_and_label(conversation, profile_mapping)
+      help_msg, label = get_button_help_and_label(conversation, profile_mapping)
       st.button(
         label=label,
         use_container_width=True,
@@ -212,29 +218,31 @@ with st.sidebar:
         on_click=delete_conversation_sidebar,
         args=[conversation],
       )
-        
-# --- Header ---
-# st.header(f"💬 Chat - {st.session_state.current_profile}")
 
 # --- Display Chat History ---
-for message in st.session_state.messages:
-  message_role = message["role"]
-  message_content = message["content"]
-  message_help = message.get("help", "")
-  st.chat_message(message_role).markdown(message_content, help=message_help)
+for hist_message in st.session_state.messages:
+  hist_message_role = hist_message["role"]
+  hist_message_content = hist_message["content"]
+  hist_message_help = hist_message["help"]
+
+  st.chat_message(hist_message_role).markdown(hist_message_content, help=hist_message_help)
 
 # --- Starter Message ---
 curr_profile = st.session_state.get("current_profile", objects.DEFAULT_PROFILE)
 starter_msg = get_starter_message(curr_profile)
 starter_msg_role = starter_msg["role"]
 starter_msg_content = starter_msg["content"]
-starter_msg_help = starter_msg.get("help", "")
+starter_msg_help = starter_msg["help"]
 starter_msg_content_stream = convert_text_to_stream(starter_msg_content)
 
 if len(st.session_state.messages) == 0:
-  with st.chat_message(starter_msg_role):
-    st.write_stream(starter_msg_content_stream)
-    st.markdown(body="", help=starter_msg_help)
+  starter_message_box = st.chat_message("assistant").empty()
+    
+  starter_collected_chunks = ""
+
+  for chunk in starter_msg_content_stream :
+    starter_collected_chunks  += chunk
+    starter_message_box.markdown(starter_collected_chunks, help=starter_msg_help)
     
   st.session_state.messages.append(starter_msg)
   
@@ -243,7 +251,7 @@ if len(st.session_state.messages) == 0:
     conversation_id=st.session_state.current_conversation_id,
     sender=starter_msg_role,
     content=starter_msg_content,
-    helper=starter_msg_help
+    help=starter_msg_help
   ) # add message to database
   
 # --- User Input ---
@@ -253,25 +261,31 @@ user_input = st.chat_input("Type your message here...")
 if user_input:
   # to write user_input first
   st.chat_message("user").write(user_input)
-  user_message = {
-    "role": "user",
-    "content": user_input,
-  }
+  user_message = create_message_format(role="user", content=user_input)
   st.session_state.messages.append(user_message)
   
   add_message(
     db=postgresdb,
     conversation_id=st.session_state.current_conversation_id,
     sender="user",
-    content=user_input
+    content=user_input,
   ) # add message to database
  
   # get response
   with st.spinner("Generating response...", show_time=True):
+    curr_profile = st.session_state.get("current_profile", objects.DEFAULT_PROFILE)
+    system_message, metadata = get_profile_prompt(db=chromadb, profile=curr_profile, query=user_input)
+    
+    if metadata:
+      collated_metadata = list(set([f"{item['document_name']}: {item['document_link']}" for item in metadata]))
+      message_help = collapse_list_to_points(top_msg="List of Referenced Documents", list_of_items=collated_metadata)
+    else:
+      message_help = ""
+      
     response_stream = get_response(
-      db=chromadb,
-      profile=st.session_state.get("current_profile", objects.DEFAULT_PROFILE),
+      profile=curr_profile,
       query=user_input,
+      system_message=system_message,
       message_history=st.session_state.messages
     )
     
@@ -281,32 +295,15 @@ if user_input:
     
     for chunk in response_stream:
       collected_chunks += chunk
-      ai_message_box.markdown(collected_chunks)
+      ai_message_box.markdown(collected_chunks, help=message_help)
     
-  assistant_message = {
-    "role": "assistant",
-    "content": collected_chunks,
-  }
+  assistant_message = create_message_format(role="assistant", content=collected_chunks, help=message_help)
   st.session_state.messages.append(assistant_message)
   
   add_message(
     db=postgresdb,
     conversation_id=st.session_state.current_conversation_id,
     sender="assistant",
-    content=collected_chunks
+    content=collected_chunks,
+    help=message_help
   ) # add message to database
-
-  
-# def fetch_pdf_file_contents():
-#   pdf_file = convert_conversation_for_download(st.session_state.messages)
-
-#   with open(pdf_file, "rb") as pdf_file:
-#     pdf_bytes = pdf_file.read()
-
-# st.download_button(
-#   label="Download PDF",
-#   data=pdf_bytes,
-#   file_name=f"conversation_history_{time.time()}",
-#   mime='application/octet-stream',
-#   icon=":material/download:"
-# )

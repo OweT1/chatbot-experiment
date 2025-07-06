@@ -1,5 +1,6 @@
 import ollama
 import streamlit as st
+import streamlit.components.v1 as components
 from fpdf import FPDF
 import datetime #, time
 import json
@@ -15,7 +16,7 @@ from src.utils.utils import (
 from src.utils.tavily_search import tavily_search
 
 # --- Helper functions --- #
-def collapse_list_to_points(top_msg, list_of_items):
+def collapse_list_to_points(top_msg: str, list_of_items: list[str]) -> str:
   output = f"{top_msg}:\n"
   
   for item in list_of_items:
@@ -23,7 +24,7 @@ def collapse_list_to_points(top_msg, list_of_items):
     
   return output
   
-def convert_conversation_to_text(messages):
+def convert_conversation_to_text(messages: list[dict[str, str]]) -> str:
     lines = []
     for msg in messages:
         role = msg["role"].capitalize()
@@ -45,6 +46,13 @@ def collapse_msg_dict(conversation_message: dict[str, str]) -> dict[str, str]:
 
 def format_datetime(datetime_obj):
   return datetime_obj.strftime("%d %B %Y, %H:%M:%S")
+
+def create_message_format(role: str, content: str, help: str = ""):
+  return {
+    "role": role,
+    "content": content,
+    "help": help
+  }
   
 # --- Main functions --- #
 def convert_conversation_to_pdf_file(conversation_history: list[dict[str, str]]):
@@ -81,7 +89,8 @@ def get_starter_message(profile: str):
   starter_msg_dict = {
     "General": {
       "role": "assistant",
-      "content": "Hey! I am your personal assistant. You can ask me about anything!"
+      "content": "Hey! I am your personal assistant. You can ask me about anything!",
+      "help": "Powered by Tavily Search!"
     },
     "Shopee": {
       "role": "assistant",
@@ -90,7 +99,8 @@ def get_starter_message(profile: str):
     },
     "Personal": {
       "role": "assistant",
-      "content": "Hey! I am your personal assistant. You can ask me about anything regarding Owen!"
+      "content": "Hey! I am your personal assistant. You can ask me about anything regarding Owen!",
+      "help": "Currently Supporting Resume"
     }
   }
 
@@ -120,9 +130,7 @@ def get_profile_prompt(db, profile:str, query: str):
   
   return formatted_prompt, metadata
 
-def get_response(db, profile: str, query: str, message_history: list[dict[str, str]]) -> str:
-  system_message, metadata = get_profile_prompt(db, profile, query)
-  
+def get_response(profile: str, query: str, system_message: str, message_history: list[dict[str, str]]) -> str:
   system_message_formatted = {
     "role": "system",
     "content": system_message,
@@ -169,7 +177,7 @@ def get_response(db, profile: str, query: str, message_history: list[dict[str, s
   # print(time_taken)
   # yield f"\n\n :gray-badge[:small[*:timer_clock: Time taken  &mdash; {time_taken: .2f} seconds*]]"
   
-def get_button_helper_and_label(conversation, profile_mapping):
+def get_button_help_and_label(conversation, profile_mapping):
   conversation_id = conversation.id
   profile = conversation.profile
   title = conversation.title
@@ -190,3 +198,26 @@ def get_button_helper_and_label(conversation, profile_mapping):
   """
   
   return help_msg, label
+
+def close_dialog():
+  components.html(
+      """\
+      <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const modal = parent.document.querySelector('div[data-baseweb="modal"]');
+        if (modal) {
+            // Apply a fade-out transition
+            modal.style.transition = 'opacity 0.5s ease';
+            modal.style.opacity = '0';
+
+            // Remove the modal after the fade-out effect finishes
+            setTimeout(function() {
+                modal.remove();
+            }, 100);  // Time corresponds to the transition duration (0.1s)
+        }
+      });
+      </script>
+      """,
+      height=0,
+      scrolling=False,
+  )

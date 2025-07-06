@@ -33,7 +33,7 @@ class ConversationMessage(Base):
   sender = Column(String(50), nullable=False)
   content = Column(Text, nullable=False)
   created_at = Column(DateTime(timezone=True), default=datetime.datetime.now)
-  helper = Column(Text)
+  help = Column(Text)
   
   conversation = relationship("Conversation", back_populates="messages")
 
