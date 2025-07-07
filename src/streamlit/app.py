@@ -93,15 +93,15 @@ if "current_conversation_id" not in st.session_state and "current_profile" not i
     st.session_state.current_profile = objects.DEFAULT_PROFILE
   
 # initialise message history
-if "messages" not in st.session_state:
-  if st.session_state.current_conversation_id:
-    st.session_state.messages = get_conversation_history(
-      db=postgresdb, conversation_id=st.session_state.current_conversation_id
-    )
-  else:
-    st.session_state.messages = []
+if st.session_state.current_conversation_id:
+  st.session_state.messages = get_conversation_history(
+    db=postgresdb, conversation_id=st.session_state.current_conversation_id
+  )
+elif "messages" not in st.session_state:
+  st.session_state.messages = []
   
 def add_and_change_conversation_session(profile: str = objects.DEFAULT_PROFILE):
+  """Adds and changes the current conversation to it"""
   st.session_state.messages = [] # reset session_state messages
   st.session_state.current_profile = profile
   st.session_state.current_conversation_id = add_conversation(
@@ -163,10 +163,12 @@ def choose_file_type():
     )
 
 def change_conversation(conversation):
+  """Changes the current conversation"""
   st.session_state.current_conversation_id = conversation.id
   st.session_state.current_profile = conversation.profile
   
 def delete_conversation_sidebar(conversation):
+  """Function to delete a conversation"""
   delete_conversation(postgresdb, conversation.id)
   latest_conversation = get_most_recent_conversation(postgresdb)
   if latest_conversation:
