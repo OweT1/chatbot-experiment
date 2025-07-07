@@ -241,7 +241,7 @@ if len(st.session_state.messages) == 0:
   starter_collected_chunks = ""
 
   for chunk in starter_msg_content_stream :
-    starter_collected_chunks  += chunk
+    starter_collected_chunks += chunk
     starter_message_box.markdown(starter_collected_chunks, help=starter_msg_help)
     
   st.session_state.messages.append(starter_msg)
@@ -274,19 +274,23 @@ if user_input:
   # get response
   with st.spinner("Generating response...", show_time=True):
     curr_profile = st.session_state.get("current_profile", objects.DEFAULT_PROFILE)
-    system_message, metadata = get_profile_prompt(db=chromadb, profile=curr_profile, query=user_input)
+    system_message = get_profile_prompt(profile=curr_profile, query=user_input)
     
-    if metadata:
+    if curr_profile == "shopee":
+      chunks, metadata = generate_relevant_chunks(
+        db=db, query=query, collection_name="shopee"
+      )
       collated_metadata = list(set([f"{item['document_name']}: {item['document_link']}" for item in metadata]))
       message_help = collapse_list_to_points(top_msg="List of Referenced Documents", list_of_items=collated_metadata)
     else:
+      chunks = []
       message_help = ""
       
     response_stream = get_response(
       profile=curr_profile,
       query=user_input,
-      system_message=system_message,
-      message_history=st.session_state.messages
+      message_history=st.session_state.messages,
+      chunks=chunks
     )
     
     ai_message_box = st.chat_message("assistant").empty()

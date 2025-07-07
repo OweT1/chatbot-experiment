@@ -106,19 +106,14 @@ def get_starter_message(profile: str):
 
   return starter_msg_dict[profile]
 
-def get_profile_prompt(db, profile:str, query: str):
+def get_profile_prompt(profile: str, query: str) -> str:
   formatted_profile = profile.lower()
   prompt = get_prompt(formatted_profile)
   
   current_datetime = datetime.datetime.now()
 
-  metadata = []
   if formatted_profile == "shopee":
-    chunks, metadata = generate_relevant_chunks(
-      db=db, query=query, collection_name="shopee"
-    )
-    relevant_info = "\n- ".join(chunks)
-    formatted_prompt = prompt.format(relevant_information=relevant_info, current_datetime=current_datetime)
+    formatted_prompt = prompt.format(current_datetime=current_datetime)
     
   elif formatted_profile == "general":
     formatted_prompt = prompt.format(current_datetime=current_datetime)
@@ -128,17 +123,22 @@ def get_profile_prompt(db, profile:str, query: str):
     person_name = "Owen"
     formatted_prompt = prompt.format(person_profile=person_profile, person_name=person_name, current_datetime=current_datetime)
   
-  return formatted_prompt, metadata
+  return formatted_prompt  
 
-def get_response(profile: str, query: str, system_message: str, message_history: list[dict[str, str]]) -> str:
+def get_response(profile: str, query: str, message_history: list[dict[str, str]], chunks: list[str]) -> str:
+  system_message = get_profile_prompt(profile=profile, query=query)
   system_message_formatted = {
     "role": "system",
     "content": system_message,
   }
   
+  starter_context = ""
+  if chunks:
+    starter_context = collapse_list_to_points("Relevant Information", chunks)
+    
   user_message_formatted = {
     "role": "user",
-    "content": query,
+    "content": f"{starter_context}\n\n{query}",
   }
 
   messages = [
