@@ -12,6 +12,7 @@ python-dotenv
 tavily-python
 requests
 bs4
+tavily-python
 pyyaml
 selenium
 python-docx
