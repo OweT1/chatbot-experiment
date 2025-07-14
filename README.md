@@ -10,7 +10,11 @@ The old code can be found in `main.ipynb`. Before using the code, we will need t
 
 Ollama can be installed over at [https://ollama.com/download](https://ollama.com/download).
 
-After the installation of Ollama, you will need to do `ollama pull mistral` in the Command Prompt to install the model in order to use the model for QA.
+After the installation of Ollama, you will need to install the Mistral model by doing:
+
+```
+ollama pull mistral
+```
 
 ## Docker
 
@@ -27,10 +31,32 @@ It is required to have an `.env` file containing the following information:
 - POSTGRES_PASSWORD (determined by you)
 - POSTGRES_DATABASE_NAME (determined by you)
 
+You can get a copy of the `.env` file by doing:
+
+```
+cp .env.template .env
+```
+
+## Installing of Project Dependencies
+
+Install the necessary requirements by doing:
+
+```
+pip install -r requirements.txt
+```
+
 # Project Start
 
-1. Install the requirements in `requirements.txt` using `pip install -r requirements.txt`.
-2. In the project folder, run `docker compose up -d` to run the docker containers for our databases
-3. In the project folder, run `streamlit run src/streamlit/app.py` to run the streamlit app, which will automatically open in your current browser.
+1. In the project folder, run the docker containers for our databases by doing:
+
+```
+docker compose up -d
+```
+
+2. In the project folder, run the streamlit app by doing:
+
+```
+streamlit run src/streamlit/app.py
+```
 
 Feel free to try it out on your end! :D
